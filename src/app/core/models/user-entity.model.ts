@@ -15,7 +15,7 @@ export interface UserEntityModel {
 /**
  * UserEntity class that implements UserEntity iterface
  */
-export class UserEntity implements UserEntity {
+export class UserEntity implements UserEntityModel {
   /**
    * id of course item
    */
