@@ -3,27 +3,12 @@ import { NgModule } from "@angular/core";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
-import { FooterComponent } from "./footer/index";
-import { HeaderComponent, LogoComponent } from "./header/index";
-import { BreadcrumbsComponent } from "./breadcrumbs/index";
-import { SectionComponent } from "./section/index";
-import {
-  CoursesListComponent,
-  CourseItemComponent,
-} from "./courses-list/index";
+
+import { DashboardLayoutModule } from "./dashboard-layout/index";
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    FooterComponent,
-    HeaderComponent,
-    LogoComponent,
-    BreadcrumbsComponent,
-    SectionComponent,
-    CoursesListComponent,
-    CourseItemComponent,
-  ],
-  imports: [BrowserModule, AppRoutingModule],
+  declarations: [AppComponent],
+  imports: [BrowserModule, AppRoutingModule, DashboardLayoutModule],
   providers: [],
   bootstrap: [AppComponent],
 })
