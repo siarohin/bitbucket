@@ -18,7 +18,7 @@ export interface CourseItemModel {
   creationDate: Date | number;
 
   /**
-   * course's duration
+   * course's duration in minutes
    */
   duration: number;
 

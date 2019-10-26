@@ -1,1 +1,26 @@
-<p>course-item works!</p>
+<mat-card [ngClass]="{ last: isLast }">
+  <mat-card-title>
+    <h3 class="main-title">{{ course?.title }}</h3>
+    <span class="add-title">
+      <fa-icon [icon]="faClock"></fa-icon>
+      {{ course?.duration | convertTime }}
+
+      <fa-icon [icon]="faCalendarAlt"></fa-icon>
+      {{ course?.creationDate | date: "d MMM, y" }}
+    </span>
+  </mat-card-title>
+  <mat-card-content>{{
+    course?.description | truncate: 220
+  }}</mat-card-content>
+
+  <div class="buttons">
+    <button (click)="onEditBtnClick()" mat-flat-button>
+      <fa-icon [icon]="faPen"></fa-icon>
+      Edit
+    </button>
+    <button (click)="onDeleteBtnClick()" mat-flat-button>
+      <fa-icon [icon]="faTrashAlt"></fa-icon>
+      Delete
+    </button>
+  </div>
+</mat-card>

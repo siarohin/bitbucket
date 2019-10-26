@@ -1,4 +1,17 @@
-<p>dashboard-layout works!</p>
-<app-header></app-header>
-<app-courses-list></app-courses-list>
-<app-footer></app-footer>
+<div class="dashboard-layout">
+  <app-header></app-header>
+
+  <div class="breadcrumb">
+    <h2 class="title">Courses</h2>
+  </div>
+
+  <app-search-form
+    (searchButtonClick)="searchButtonClick($event)"
+  ></app-search-form>
+
+  <app-courses-list
+    [coursesList]="coursesList$ | async"
+  ></app-courses-list>
+
+  <app-footer></app-footer>
+</div>
