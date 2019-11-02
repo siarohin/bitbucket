@@ -2,7 +2,6 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
 import { SharedModule } from "../shared/index";
-import { CoursesListService } from "../core/index";
 import { HeaderComponent, UserEntityComponent } from "./header/index";
 import { FooterComponent } from "./footer/index";
 import {
@@ -23,7 +22,10 @@ import { SearchFormComponent } from "./search-form/index";
     SearchFormComponent,
   ],
   imports: [CommonModule, SharedModule],
-  providers: [CoursesListService],
-  exports: [DashboardLayoutComponent],
+  exports: [
+    DashboardLayoutComponent,
+    FooterComponent,
+    HeaderComponent,
+  ],
 })
 export class DashboardLayoutModule {}

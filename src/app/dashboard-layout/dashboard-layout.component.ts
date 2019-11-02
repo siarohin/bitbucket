@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { Observable } from "rxjs";
+import { publishReplay, refCount } from "rxjs/operators";
 
 import { CoursesListService, CourseItemModel } from "../core/index";
 
@@ -27,7 +28,10 @@ export class DashboardLayoutComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.coursesList$ = this.coursesListService.coursesList$;
+    this.coursesList$ = this.coursesListService.coursesList$.pipe(
+      publishReplay(1),
+      refCount(),
+    );
   }
 
   /**

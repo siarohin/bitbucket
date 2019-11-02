@@ -3,6 +3,7 @@ import {
   Input,
   ChangeDetectionStrategy,
 } from "@angular/core";
+import last from "lodash/last";
 
 import { FA_ICONS, IconDefinition } from "../../shared/index";
 import { CourseItemModel } from "../../core/index";
@@ -22,16 +23,33 @@ const { faPlus } = FA_ICONS;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CoursesListComponent {
+  private coursesListBF: Array<CourseItemModel>;
+
+  /**
+   * Last course item
+   */
+  public lastItem: CourseItemModel;
+
   /**
    * Fontawesome icons
    */
   public faPlus: IconDefinition = faPlus;
 
   /**
-   * Array of course items
+   * Set course items array
    */
   @Input()
-  public coursesList: Array<CourseItemModel>;
+  public set coursesList(list: Array<CourseItemModel>) {
+    this.coursesListBF = list;
+    this.lastItem = last(list);
+  }
+
+  /**
+   * Get course items array
+   */
+  public get coursesList(): Array<CourseItemModel> {
+    return this.coursesListBF;
+  }
 
   /**
    * On load button click
@@ -41,9 +59,9 @@ export class CoursesListComponent {
   }
 
   /**
-   * Delete button click on course item
+   * Delete course item on button click
    */
-  public deleteButtonClick(courseId: number): void {
+  public onDeleteCourse(courseId: number): void {
     console.log(courseId);
   }
 }
