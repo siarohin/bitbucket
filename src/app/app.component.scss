@@ -5,9 +5,13 @@ $padding-layout: 0 8.5rem;
   display: grid;
   grid-template-areas:
     "header"
-    "."
+    "dashboard-layout"
     "footer";
   grid-template-rows: 6.4rem auto 6.4rem;
+
+  .dashboard-layout {
+    grid-area: dashboard-layout;
+  }
 
   app-header {
     grid-area: header;
