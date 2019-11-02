@@ -1,0 +1,23 @@
+$padding-layout: 0 8.5rem;
+
+.app-layout {
+  font-size: 1.6rem;
+  display: grid;
+  grid-template-areas:
+    "header"
+    "."
+    "footer";
+  grid-template-rows: 6.4rem auto 6.4rem;
+
+  app-header {
+    grid-area: header;
+    background: var(--pale-dark-grey);
+    padding: 0 2rem $padding-layout;
+  }
+
+  app-footer {
+    grid-area: footer;
+    background: var(--pale-dark-grey);
+    padding: $padding-layout;
+  }
+}

@@ -1,1 +1,68 @@
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$bitbucket-primary: mat-palette($mat-indigo);
+$bitbucket-accent: mat-palette($mat-pink, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$bitbucket-warn: mat-palette($mat-red);
+
+// Create the theme object (a Sass map containing all of the palettes).
+$bitbucket-theme: mat-light-theme(
+  $bitbucket-primary,
+  $bitbucket-accent,
+  $bitbucket-warn
+);
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($bitbucket-theme);
+
 /* You can add global styles to this file, and also import other style files */
+
+html,
+body {
+  height: 100%;
+  font-size: 10px;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+:root {
+  // Background palette
+  --pale-grey: #f2f3f7;
+  --pale-dark-grey: #414452;
+
+  // Color schema
+  --white: #ffffff;
+  --dark: #2c2f3c;
+  --light: #d9dbe3;
+  --green: #9bc837;
+  --silver: #c0c3ce;
+  --dark-sky-blue: #30b6dd;
+  --slate-grey: #525462;
+  --cloudy-blue: #b9bdce;
+  --silver: #c0c3ce;
+  --steel: #868996;
+  --soft-blue: #577ce6;
+
+  // Font
+  --font-family: Roboto, "Helvetica Neue", sans-serif;
+
+  --font-weight-thin: 400;
+  --font-weight: 500;
+  --font-weight-bold: 700;
+}

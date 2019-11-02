@@ -8,7 +8,7 @@ import { DashboardLayoutModule } from "./dashboard-layout/index";
 
 @NgModule({
   declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, DashboardLayoutModule],
+  imports: [BrowserModule, DashboardLayoutModule, AppRoutingModule],
   providers: [],
   bootstrap: [AppComponent],
 })

@@ -1,2 +1,23 @@
-<p>courses-list works!</p>
-<app-course-item></app-course-item>
+<div class="courses-list">
+  <button mat-flat-button class="add-course-btn">
+    <fa-icon [icon]="faPlus"></fa-icon>
+    Add course
+  </button>
+
+  <div class="list">
+    <div class="scrl-context">
+      <app-course-item
+        *ngFor="let item of coursesList"
+        [course]="item"
+        [isLast]="lastItem === item"
+        (deleteButtonClick)="onDeleteCourse($event)"
+      ></app-course-item>
+    </div>
+  </div>
+
+  <mat-card>
+    <mat-card-content>
+      <button (click)="onLoadBtnClick()" mat-button>Load more</button>
+    </mat-card-content>
+  </mat-card>
+</div>

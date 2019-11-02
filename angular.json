@@ -42,7 +42,10 @@
             "tsConfig": "tsconfig.app.json",
             "aot": false,
             "assets": ["src/favicon.ico", "src/assets"],
-            "styles": ["src/styles.scss"],
+            "styles": [
+              "src/styles.scss",
+              "./node_modules/font-awesome/css/font-awesome.min.css"
+            ],
             "scripts": []
           },
           "configurations": {

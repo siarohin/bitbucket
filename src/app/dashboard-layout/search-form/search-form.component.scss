@@ -1,0 +1,56 @@
+.search-form {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  button {
+    height: 4.8rem;
+    width: 10rem;
+    margin: 0 1rem;
+    background: var(--green);
+    color: var(--white);
+    font-size: 1.8rem;
+  }
+
+  .custom-input {
+    height: 4.8rem;
+    width: 36rem;
+    border-radius: 0.3rem;
+    border: solid 0.1rem var(--light);
+    background: var(--white);
+    position: relative;
+
+    fa-icon {
+      font-size: 2.4rem;
+      color: var(--steel);
+      transform: scale(-1, 1);
+      position: absolute;
+      top: calc(50% - 1.4rem);
+      left: 1.2rem;
+    }
+
+    input {
+      height: 100%;
+      $margin-left: 4.2rem;
+      margin-left: $margin-left;
+      width: calc(100% - #{$margin-left});
+      outline: 0;
+      outline-offset: 0;
+      border: none;
+      border-radius: 0.3rem;
+      box-sizing: border-box;
+      font-family: var(--font-family);
+      font-size: 1.4rem;
+
+      &::placeholder {
+        color: var(--silver);
+      }
+
+      &:focus {
+        outline: 0;
+        outline-offset: 0;
+      }
+    }
+  }
+}

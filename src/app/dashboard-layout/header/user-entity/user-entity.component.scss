@@ -1,0 +1,42 @@
+.user-entity {
+  display: grid;
+  grid-template-areas: "login . logoff";
+  grid-template-columns: 5fr 2rem 5fr;
+  align-items: center;
+  justify-items: center;
+  height: 3.6rem;
+
+  .login {
+    grid-area: login;
+    font-size: 1.4rem;
+    line-height: 3.6rem;
+
+    fa-icon {
+      font-size: 1.4rem;
+
+      &::after {
+        content: "";
+        margin: 0 0.5rem 0 0;
+      }
+    }
+  }
+
+  .logoff-btn {
+    grid-area: logoff;
+    font-size: 1.4rem;
+    background: transparent;
+    color: var(--white);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight);
+    height: 3.6rem;
+
+    fa-icon {
+      font-size: 1.4rem;
+
+      &::after {
+        content: "";
+        margin: 0 0.5rem 0 0;
+      }
+    }
+  }
+}

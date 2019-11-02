@@ -1,0 +1,37 @@
+$padding-layout: 0 8.5rem;
+
+.container {
+  font-size: 1.6rem;
+  display: grid;
+  grid-template-areas:
+    "breadcrumb"
+    "search-form"
+    "courses-list";
+  grid-template-rows: 6.4rem 11.4rem auto;
+
+  app-search-form {
+    grid-area: search-form;
+    background: var(--pale-grey);
+    padding: $padding-layout;
+  }
+
+  app-courses-list {
+    grid-area: courses-list;
+    background: var(--pale-grey);
+    padding: $padding-layout;
+  }
+
+  .breadcrumb {
+    grid-area: breadcrumb;
+    display: inline-grid;
+    align-items: center;
+    background: var(--white);
+    padding: $padding-layout;
+
+    .title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--dark);
+    }
+  }
+}
