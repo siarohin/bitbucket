@@ -18,7 +18,7 @@ export class TruncatePipe implements PipeTransform {
   transform(value: string, length: number = DEFAULT_LENGTH): any {
     if (!isEmpty(value)) {
       return value.length > length
-        ? truncate(value, { length: length - 3, separator: "..." })
+        ? truncate(value, { length: length + 3, separator: "..." })
         : value;
     } else {
       return value;
