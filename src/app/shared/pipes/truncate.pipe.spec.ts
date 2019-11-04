@@ -15,7 +15,7 @@ describe("TruncatePipe:", () => {
       value: "Have you been wanting",
       expected: "Have you been wanting",
     },
-    { value: " ", expected: " " },
+    { value: "", expected: "" },
   ];
   const pipe = new TruncatePipe();
 

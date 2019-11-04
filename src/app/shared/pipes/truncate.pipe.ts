@@ -15,7 +15,7 @@ const DEFAULT_LENGTH = 180;
   name: "truncate",
 })
 export class TruncatePipe implements PipeTransform {
-  transform(value: string, length: number = DEFAULT_LENGTH): any {
+  transform(value: string, length: number = DEFAULT_LENGTH): string {
     if (!isEmpty(value)) {
       return value.length > length
         ? truncate(value, { length: length + 3, separator: "..." })
