@@ -1,9 +1,9 @@
-import { OrderByPipe } from "./order-by.pipe";
 import first from "lodash/first";
 import keys from "lodash/keys";
 import sortBy from "lodash/sortBy";
 
 import { DEFAULT_CONFIG, CourseItemModel } from "../../core/index";
+import { OrderByPipe } from "./order-by.pipe";
 
 describe("SharedModule.OrderByPipe:", () => {
   const testElement: CourseItemModel = first(DEFAULT_CONFIG);
@@ -22,14 +22,14 @@ describe("SharedModule.OrderByPipe:", () => {
     });
   });
 
-  it("should transform value if parameter wasn't defined", () => {
+  it("should transform value if parameter is not defined", () => {
     const sortedTestParameters: Array<string> = testParameters.sort();
     expect(pipe.transform(DEFAULT_CONFIG)).toEqual(
       sortBy(DEFAULT_CONFIG, sortedTestParameters),
     );
   });
 
-  it("should not transform value if value wasn't defined", () => {
+  it("should not transform value if value is not defined", () => {
     expect(pipe.transform(undefined)).toBe(undefined);
   });
 });

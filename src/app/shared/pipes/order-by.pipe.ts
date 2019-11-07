@@ -25,7 +25,7 @@ export class OrderByPipe implements PipeTransform {
       return sortBy(source, [parameter]);
     }
 
-    // sort by key names if parameter wasn't defined
+    // sort by key names if parameter is not defined
     const firstElement: CourseItemModel = first(source);
     const firstElementKeys: Array<string> = keys(firstElement).sort();
     return sortBy(source, [...firstElementKeys]);
