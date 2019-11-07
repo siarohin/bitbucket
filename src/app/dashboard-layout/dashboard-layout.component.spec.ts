@@ -11,7 +11,7 @@ import { BehaviorSubject } from "rxjs";
 import { DashboardLayoutComponent } from "./dashboard-layout.component";
 import { CoursesListService, CourseItemModel } from "../core/index";
 
-describe("DashboardLayoutComponent", () => {
+describe("DashboardLayoutComponent:", () => {
   let component: DashboardLayoutComponent;
   let fixture: ComponentFixture<DashboardLayoutComponent>;
 
@@ -65,11 +65,10 @@ describe("DashboardLayoutComponent", () => {
     tick();
   }));
 
-  it("searchButtonClick() should add text to console.log", () => {
-    console.log = jasmine.createSpy("log");
+  it("onSearchButtonClick() should set inputValue property", () => {
     const expected = "Have you been wanting to join a book club";
-    component.searchButtonClick(expected);
-
-    expect(console.log).toHaveBeenCalledWith(expected);
+    component.onSearchButtonClick(expected);
+    fixture.detectChanges();
+    expect(component.inputValue).toEqual(expected);
   });
 });

@@ -8,7 +8,7 @@ import { By } from "@angular/platform-browser";
 
 import { HeaderComponent } from "./header.component";
 
-describe("HeaderComponent", () => {
+describe("HeaderComponent:", () => {
   let component: HeaderComponent;
   let fixture: ComponentFixture<HeaderComponent>;
 

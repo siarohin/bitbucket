@@ -4,7 +4,7 @@ import { CoursesListService } from "./courses-list.service";
 import { CourseItemModel } from "./models/index";
 import { DEFAULT_CONFIG } from "./courses.config";
 
-describe("CoursesListService:", () => {
+describe("Core.CoursesListService:", () => {
   let courseListService: CoursesListService;
 
   beforeEach(() => {

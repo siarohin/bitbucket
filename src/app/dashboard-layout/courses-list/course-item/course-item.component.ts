@@ -6,13 +6,23 @@ import {
   EventEmitter,
 } from "@angular/core";
 
-import { FA_ICONS, IconDefinition } from "../../../shared/index";
+import {
+  FA_ICONS,
+  IconDefinition,
+  HighlightSchemas,
+} from "../../../shared/index";
 import { CourseItemModel } from "../../../core/index";
 
 /**
  * Font Awesome icons from shared module
  */
-const { faClock, faCalendarAlt, faPen, faTrashAlt } = FA_ICONS;
+const {
+  faClock,
+  faCalendarAlt,
+  faPen,
+  faTrashAlt,
+  faStar,
+} = FA_ICONS;
 
 /**
  * Simple component that represents course item
@@ -31,6 +41,16 @@ export class CourseItemComponent {
   public faCalendarAlt: IconDefinition = faCalendarAlt;
   public faPen: IconDefinition = faPen;
   public faTrashAlt: IconDefinition = faTrashAlt;
+  public faStar: IconDefinition = faStar;
+
+  /**
+   * Highlight schemas for component
+   */
+  public schemas: HighlightSchemas = {
+    isFreshCourse: "highlight-schema-fresh",
+    isPlannedCourse: "highlight-schema-planned",
+    isTopRated: "highlight-schema-top-rated",
+  };
 
   /**
    * Course item

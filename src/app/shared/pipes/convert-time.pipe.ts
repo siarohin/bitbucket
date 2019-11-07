@@ -13,9 +13,9 @@ export class ConvertTimePipe implements PipeTransform {
       const min: number = value % 60;
 
       if (min !== 0) {
-        return hour > 0 ? `${hour}h ${min} min` : `${min} min`;
+        return hour > 0 ? `${hour}h ${min}min` : `${min}min`;
       } else {
-        return `${hour}h`;
+        return `${hour}h ${min}${min}min`;
       }
     } else {
       return "";

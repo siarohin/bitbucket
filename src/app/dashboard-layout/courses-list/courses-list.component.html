@@ -4,20 +4,33 @@
     Add course
   </button>
 
-  <div class="list">
-    <div class="scrl-context">
-      <app-course-item
-        *ngFor="let item of coursesList"
-        [course]="item"
-        [isLast]="lastItem === item"
-        (deleteButtonClick)="onDeleteCourse($event)"
-      ></app-course-item>
+  <ng-container *ngIf="coursesList?.length; else emptyContainer">
+    <div class="list">
+      <div class="scrl-context">
+        <app-course-item
+          *ngFor="let item of coursesList; last as isLast"
+          [course]="item"
+          [isLast]="isLast"
+          (deleteButtonClick)="onDeleteCourse($event)"
+        ></app-course-item>
+      </div>
     </div>
-  </div>
+    <mat-card>
+      <mat-card-content>
+        <button (click)="onLoadBtnClick()" mat-button>
+          Load more
+        </button>
+      </mat-card-content>
+    </mat-card>
+  </ng-container>
 
-  <mat-card>
-    <mat-card-content>
-      <button (click)="onLoadBtnClick()" mat-button>Load more</button>
-    </mat-card-content>
-  </mat-card>
+  <ng-template #emptyContainer>
+    <div class="list">
+      <mat-card class="empty-container">
+        <mat-card-content>
+          {{ "No data, feel free to add new course" | uppercase }}
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </ng-template>
 </div>

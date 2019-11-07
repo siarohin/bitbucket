@@ -1,6 +1,6 @@
 import { TruncatePipe } from "./truncate.pipe";
 
-describe("TruncatePipe:", () => {
+describe("SharedModule.TruncatePipe:", () => {
   const testCase: Array<{
     value: string;
     length?: number;

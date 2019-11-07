@@ -5,6 +5,18 @@ mat-card {
   grid-template-columns: 70% 30%;
   column-gap: 2rem;
 
+  &.highlight-schema-fresh {
+    border: 0.1rem solid var(--green);
+  }
+
+  &.highlight-schema-planned {
+    border: 0.1rem solid var(--soft-blue);
+  }
+
+  &.highlight-schema-top-rated {
+    background: var(--light-yellow);
+  }
+
   &.last {
     margin: 0;
   }
@@ -26,6 +38,10 @@ mat-card {
       margin: 0;
       color: var(--dark);
       justify-self: start;
+    }
+
+    .top-star {
+      color: var(--yellow);
     }
 
     .add-title {

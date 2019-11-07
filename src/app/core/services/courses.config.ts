@@ -16,7 +16,7 @@ export const DEFAULT_CONFIG: Array<CourseItemModel> = [
   {
     id: 2,
     title: "The Game of Mafia",
-    creationDate: new Date(2019, 11, 12, 18, 0, 0, 0),
+    creationDate: new Date(2019, 9, 28, 18, 0, 0, 0),
     duration: 400,
     description:
       "The Game of Mafia is a group game where players try to discover the identity of a secret “mafia” amongst the group before they’re all eliminated. This is a  role-playing game of strategy, survival, and the ability to spot a fraud. During the event you will have plenty of speaking practice, learn functional language applicable in real life communication, you will be able to develop analytical and negotiation skills.",
@@ -36,5 +36,23 @@ export const DEFAULT_CONFIG: Array<CourseItemModel> = [
     duration: 1800,
     description:
       "Cross-country global mentoring program which aims at improving corresponding skills related to Node.js ecosystem and connected environment, giving a strong base of skill set required to have for a production-ready engineer. The program consists of 8 step by step practice tasks that will result in practical experience working with Node.js artifacts implementing partials of RESTful API web server and relevant components.",
+    isTopRated: true,
+  },
+  {
+    id: 5,
+    title: "Angular Mentoring Programm",
+    creationDate: new Date(2019, 10, 7, 14, 30, 0, 0),
+    duration: 60,
+    description:
+      "Have you been wanting to join a book club, but haven't been able to find one that is just right? Why not join an EPAM Book Club? A book club is a great way to meet your colleagues, make new friends, read inspirational stories, take them to your heart and share your ideas in English. Here you will have the chance to discuss unabridged short stories in a relaxed, supportive atmosphere.",
+    isTopRated: true,
+  },
+  {
+    id: 6,
+    title: "English Club",
+    creationDate: new Date(2018, 0, 10, 10, 0, 0, 0),
+    duration: 135,
+    description:
+      "Learn English at the top-rated English Language school in San Francisco. Beautiful, conveniently located campus at One Embarcadero Center. Full-time, professional teachers.",
   },
 ];

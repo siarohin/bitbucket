@@ -17,9 +17,15 @@ import {
   faSearch,
   faPen,
   faTrashAlt,
+  faStar,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { ConvertTimePipe, TruncatePipe } from "./pipes/index";
+import {
+  ConvertTimePipe,
+  TruncatePipe,
+  OrderByPipe,
+} from "./pipes/index";
+import { HighlightDirective } from "./directives/index";
 
 /**
  * Font Awesome icons
@@ -33,10 +39,16 @@ export const FA_ICONS: { [key: string]: IconDefinition } = {
   faSearch,
   faPen,
   faTrashAlt,
+  faStar,
 };
 
 @NgModule({
-  declarations: [ConvertTimePipe, TruncatePipe],
+  declarations: [
+    ConvertTimePipe,
+    TruncatePipe,
+    OrderByPipe,
+    HighlightDirective,
+  ],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -50,9 +62,11 @@ export const FA_ICONS: { [key: string]: IconDefinition } = {
     HttpClientModule,
     MatButtonModule,
     MatCardModule,
+    FontAwesomeModule,
     ConvertTimePipe,
     TruncatePipe,
-    FontAwesomeModule,
+    OrderByPipe,
+    HighlightDirective,
   ],
 })
 export class SharedModule {}

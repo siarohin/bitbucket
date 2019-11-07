@@ -1,6 +1,19 @@
-<mat-card [ngClass]="{ last: isLast }">
+<mat-card
+  appHighlight
+  [highlight-creation-date]="course?.creationDate"
+  [highlight-top-rated]="course?.isTopRated"
+  [highlight-schemas]="schemas"
+  [ngClass]="{ last: isLast }"
+>
   <mat-card-title>
-    <h3 class="main-title">{{ course?.title }}</h3>
+    <h3 class="main-title">
+      {{ course?.title | uppercase }}
+      <fa-icon
+        *ngIf="course?.isTopRated"
+        class="top-star"
+        [icon]="faStar"
+      ></fa-icon>
+    </h3>
     <span class="add-title">
       <fa-icon [icon]="faClock"></fa-icon>
       {{ course?.duration | convertTime }}
