@@ -74,4 +74,12 @@
       }
     }
   }
+
+  .empty-container {
+    height: calc(100vh - 45.1rem);
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+  }
 }

@@ -26,4 +26,9 @@ export interface CourseItemModel {
    * description for course item
    */
   description: string;
+
+  /**
+   * top rated field
+   */
+  isTopRated?: boolean;
 }

@@ -4,7 +4,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { AppComponent } from "./app.component";
 
-describe("AppComponent", () => {
+describe("AppComponent:", () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],

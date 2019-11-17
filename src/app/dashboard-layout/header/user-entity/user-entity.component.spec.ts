@@ -7,7 +7,7 @@ import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { UserEntityComponent } from "./user-entity.component";
 
-describe("UserEntityComponent", () => {
+describe("UserEntityComponent:", () => {
   let component: UserEntityComponent;
   let fixture: ComponentFixture<UserEntityComponent>;
 

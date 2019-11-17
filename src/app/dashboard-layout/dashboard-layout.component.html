@@ -4,10 +4,11 @@
   </div>
 
   <app-search-form
-    (searchButtonClick)="searchButtonClick($event)"
+    (searchButtonClick)="onSearchButtonClick($event)"
   ></app-search-form>
 
   <app-courses-list
     [coursesList]="coursesList$ | async"
+    [inputValue]="inputValue"
   ></app-courses-list>
 </div>

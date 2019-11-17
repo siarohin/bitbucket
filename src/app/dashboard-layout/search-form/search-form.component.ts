@@ -38,8 +38,6 @@ export class SearchFormComponent {
    * On search button click
    */
   public onBtnClick(value: string): void {
-    if (!isEmpty(value)) {
-      this.searchButtonClick.emit(value);
-    }
+    this.searchButtonClick.emit(value);
   }
 }

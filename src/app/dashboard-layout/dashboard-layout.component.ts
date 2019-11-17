@@ -20,6 +20,11 @@ export class DashboardLayoutComponent implements OnInit {
    */
   public coursesList$: Observable<Array<CourseItemModel>>;
 
+  /**
+   * User's input value
+   */
+  public inputValue: string;
+
   constructor(coursesListService: CoursesListService) {
     this.coursesListService = coursesListService;
   }
@@ -37,7 +42,7 @@ export class DashboardLayoutComponent implements OnInit {
   /**
    * User's input on search button click
    */
-  public searchButtonClick(value: string): void {
-    console.log(value);
+  public onSearchButtonClick(value: string): void {
+    this.inputValue = value;
   }
 }

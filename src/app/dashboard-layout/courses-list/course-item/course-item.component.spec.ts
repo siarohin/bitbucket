@@ -3,18 +3,14 @@ import {
   ComponentFixture,
   TestBed,
 } from "@angular/core/testing";
-import {
-  NO_ERRORS_SCHEMA,
-  Component,
-  EventEmitter,
-} from "@angular/core";
+import { NO_ERRORS_SCHEMA, Component } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
 import { CourseItemComponent } from "./course-item.component";
 import { SharedModule } from "../../../shared/index";
 import { CourseItemModel } from "../../../core/index";
 
-describe("CourseItemComponent", () => {
+describe("CourseItemComponent:", () => {
   let component: CourseItemComponent;
   let fixture: ComponentFixture<TestComponent>;
   let testComponent: TestComponent;
