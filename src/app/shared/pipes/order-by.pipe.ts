@@ -13,10 +13,7 @@ import { CourseItemModel } from "../../core/index";
   name: "orderBy",
 })
 export class OrderByPipe implements PipeTransform {
-  transform(
-    source: Array<CourseItemModel>,
-    parameter?: string,
-  ): Array<CourseItemModel> {
+  transform(source: Array<CourseItemModel>, parameter?: string): Array<CourseItemModel> {
     if (isNil(source)) {
       return source;
     }

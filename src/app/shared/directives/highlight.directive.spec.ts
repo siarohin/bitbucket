@@ -1,9 +1,5 @@
 import { Component, DebugElement } from "@angular/core";
-import {
-  ComponentFixture,
-  async,
-  TestBed,
-} from "@angular/core/testing";
+import { ComponentFixture, async, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 import assign from "lodash/assign";
 
@@ -40,8 +36,7 @@ describe("SharedModule.HighlightDirective:", () => {
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
 
-    const expected: string | boolean =
-      testComponent.schemas.isPlannedCourse;
+    const expected: string | boolean = testComponent.schemas.isPlannedCourse;
     expect(element.nativeElement.classList).toContain(expected);
   });
 
@@ -53,8 +48,7 @@ describe("SharedModule.HighlightDirective:", () => {
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
 
-    const expected: string | boolean =
-      testComponent.schemas.isFreshCourse;
+    const expected: string | boolean = testComponent.schemas.isFreshCourse;
     expect(element.nativeElement.classList).toContain(expected);
   });
 
@@ -66,12 +60,8 @@ describe("SharedModule.HighlightDirective:", () => {
 
     const expectedSchemas: HighlightSchemas = testComponent.schemas;
     const { isFreshCourse, isPlannedCourse } = expectedSchemas;
-    expect(element.nativeElement.classList).not.toContain(
-      isFreshCourse,
-    );
-    expect(element.nativeElement.classList).not.toContain(
-      isPlannedCourse,
-    );
+    expect(element.nativeElement.classList).not.toContain(isFreshCourse);
+    expect(element.nativeElement.classList).not.toContain(isPlannedCourse);
   });
 
   it("should set top rated property to classList", () => {
@@ -82,8 +72,7 @@ describe("SharedModule.HighlightDirective:", () => {
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
 
-    const expected: string | boolean =
-      testComponent.schemas.isTopRated;
+    const expected: string | boolean = testComponent.schemas.isTopRated;
     expect(element.nativeElement.classList).toContain(expected);
   });
 });

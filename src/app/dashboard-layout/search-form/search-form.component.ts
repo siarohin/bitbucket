@@ -1,9 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  Output,
-  ChangeDetectionStrategy,
-} from "@angular/core";
+import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
 import isEmpty from "lodash/isEmpty";
 
 import { FA_ICONS, IconDefinition } from "../../shared/index";

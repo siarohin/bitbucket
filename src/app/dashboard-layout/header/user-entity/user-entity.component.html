@@ -1,10 +1,10 @@
 <div class="user-entity">
   <div class="login">
     <fa-icon [icon]="faUser"></fa-icon>
-    User login
+    {{ user?.email }}
   </div>
 
-  <button mat-flat-button class="logoff-btn">
+  <button mat-flat-button class="logoff-btn" (click)="onLogoffButtonClick()">
     <fa-icon [icon]="faSignInAlt"></fa-icon>
     Log off
   </button>

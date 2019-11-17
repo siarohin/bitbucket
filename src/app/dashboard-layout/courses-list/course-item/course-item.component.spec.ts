@@ -1,8 +1,4 @@
-import {
-  async,
-  ComponentFixture,
-  TestBed,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA, Component } from "@angular/core";
 import { By } from "@angular/platform-browser";
 
@@ -34,9 +30,7 @@ describe("CourseItemComponent:", () => {
     testComponent = fixture.componentInstance;
     fixture.detectChanges();
 
-    component = fixture.debugElement.query(
-      By.directive(CourseItemComponent),
-    ).componentInstance;
+    component = fixture.debugElement.query(By.directive(CourseItemComponent)).componentInstance;
   });
 
   afterEach(() => {
@@ -59,15 +53,11 @@ describe("CourseItemComponent:", () => {
    * https://angular.io/guide/testing#component-test-basics
    */
   it("shoud call onEditBtnClick on button click()", () => {
-    const buttonsDiv = fixture.debugElement.query(By.css(".buttons"))
-      .children;
+    const buttonsDiv = fixture.debugElement.query(By.css(".buttons")).children;
     const expected = `Button 'Edit' was clicked`;
 
     const editBtn: HTMLButtonElement = buttonsDiv[0].nativeElement;
-    const onEditBtnClickSpy: jasmine.Spy = spyOn(
-      component,
-      "onEditBtnClick",
-    ).and.callThrough();
+    const onEditBtnClickSpy: jasmine.Spy = spyOn(component, "onEditBtnClick").and.callThrough();
 
     editBtn.click();
     fixture.detectChanges();
@@ -76,17 +66,10 @@ describe("CourseItemComponent:", () => {
   });
 
   it("shoud raise the deleteButtonClick event on call onDeleteBtnClick()", () => {
-    const buttonsDiv = fixture.debugElement.query(By.css(".buttons"))
-      .children;
+    const buttonsDiv = fixture.debugElement.query(By.css(".buttons")).children;
     const deleteBtn: HTMLButtonElement = buttonsDiv[1].nativeElement;
-    const onDeleteBtnClickSpy: jasmine.Spy = spyOn(
-      component,
-      "onDeleteBtnClick",
-    ).and.callThrough();
-    const onDeleteCourseSpy: jasmine.Spy = spyOn(
-      testComponent,
-      "onDeleteCourse",
-    ).and.callThrough();
+    const onDeleteBtnClickSpy: jasmine.Spy = spyOn(component, "onDeleteBtnClick").and.callThrough();
+    const onDeleteCourseSpy: jasmine.Spy = spyOn(testComponent, "onDeleteCourse").and.callThrough();
 
     component.deleteButtonClick.subscribe((courseId: number) => {
       expect(courseId).toBe(testComponent.course.id);
@@ -96,9 +79,7 @@ describe("CourseItemComponent:", () => {
     fixture.detectChanges();
 
     expect(onDeleteBtnClickSpy).toHaveBeenCalled();
-    expect(onDeleteCourseSpy).toHaveBeenCalledWith(
-      testComponent.course.id,
-    );
+    expect(onDeleteCourseSpy).toHaveBeenCalledWith(testComponent.course.id);
   });
 });
 

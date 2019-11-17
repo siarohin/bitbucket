@@ -18,11 +18,7 @@ $bitbucket-accent: mat-palette($mat-pink, A200, A100, A400);
 $bitbucket-warn: mat-palette($mat-red);
 
 // Create the theme object (a Sass map containing all of the palettes).
-$bitbucket-theme: mat-light-theme(
-  $bitbucket-primary,
-  $bitbucket-accent,
-  $bitbucket-warn
-);
+$bitbucket-theme: mat-light-theme($bitbucket-primary, $bitbucket-accent, $bitbucket-warn);
 
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
@@ -60,6 +56,7 @@ body {
   --soft-blue: #577ce6;
   --light-yellow: #ffffd4;
   --yellow: #f6d13a;
+  --red: #c40403;
 
   // Font
   --font-family: Roboto, "Helvetica Neue", sans-serif;

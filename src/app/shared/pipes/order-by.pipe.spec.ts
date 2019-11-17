@@ -16,17 +16,13 @@ describe("SharedModule.OrderByPipe:", () => {
 
   it("should transform value if parameter was defined", () => {
     testParameters.forEach(value => {
-      expect(pipe.transform(DEFAULT_CONFIG, value)).toEqual(
-        sortBy(DEFAULT_CONFIG, value),
-      );
+      expect(pipe.transform(DEFAULT_CONFIG, value)).toEqual(sortBy(DEFAULT_CONFIG, value));
     });
   });
 
   it("should transform value if parameter is not defined", () => {
     const sortedTestParameters: Array<string> = testParameters.sort();
-    expect(pipe.transform(DEFAULT_CONFIG)).toEqual(
-      sortBy(DEFAULT_CONFIG, sortedTestParameters),
-    );
+    expect(pipe.transform(DEFAULT_CONFIG)).toEqual(sortBy(DEFAULT_CONFIG, sortedTestParameters));
   });
 
   it("should not transform value if value is not defined", () => {

@@ -1,42 +1,48 @@
-import { Component, OnInit } from "@angular/core";
-import { Observable } from "rxjs";
-import { publishReplay, refCount } from "rxjs/operators";
+import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Subscription } from "rxjs";
 
-import { CoursesListService, CourseItemModel } from "../core/index";
+import { AuthService, UserAuthModel } from "../core/index";
 
 /**
- * Smart dashboard layout component
+ * Dashboard layout component
  */
 @Component({
   selector: "app-dashboard-layout",
   templateUrl: "./dashboard-layout.component.html",
   styleUrls: ["./dashboard-layout.component.scss"],
 })
-export class DashboardLayoutComponent implements OnInit {
-  private coursesListService: CoursesListService;
+export class DashboardLayoutComponent implements OnInit, OnDestroy {
+  private authService: AuthService;
+  private subscription: Subscription;
 
   /**
-   * Observable of courses list
+   * isAuthenticated user
    */
-  public coursesList$: Observable<Array<CourseItemModel>>;
+  public isAuthenticated: boolean;
 
   /**
    * User's input value
    */
   public inputValue: string;
 
-  constructor(coursesListService: CoursesListService) {
-    this.coursesListService = coursesListService;
+  constructor(authService: AuthService) {
+    this.authService = authService;
   }
 
   /**
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.coursesList$ = this.coursesListService.coursesList$.pipe(
-      publishReplay(1),
-      refCount(),
-    );
+    this.subscription = this.authService.getIsAuthenticated().subscribe(isAuthenticated => {
+      this.isAuthenticated = isAuthenticated;
+    });
+  }
+
+  /**
+   * ngOnDestroy
+   */
+  public ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   /**
@@ -44,5 +50,12 @@ export class DashboardLayoutComponent implements OnInit {
    */
   public onSearchButtonClick(value: string): void {
     this.inputValue = value;
+  }
+
+  /**
+   * Update user's info
+   */
+  public onSubmitForm(user: UserAuthModel): void {
+    this.authService.logIn(user);
   }
 }

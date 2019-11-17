@@ -1,8 +1,4 @@
-import {
-  async,
-  ComponentFixture,
-  TestBed,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
 import { SearchFormComponent } from "./search-form.component";
@@ -30,16 +26,9 @@ describe("SearchFormComponent:", () => {
 
   it("should call onBtnClick() with input.value", () => {
     const hostElement = fixture.nativeElement;
-    const nameInput: HTMLInputElement = hostElement.querySelector(
-      "input",
-    );
-    const buttonElement: HTMLButtonElement = hostElement.querySelector(
-      "button",
-    );
-    const onBtnClickSpy: jasmine.Spy = spyOn(
-      component,
-      "onBtnClick",
-    ).and.callThrough();
+    const nameInput: HTMLInputElement = hostElement.querySelector("input");
+    const buttonElement: HTMLButtonElement = hostElement.querySelector("button");
+    const onBtnClickSpy: jasmine.Spy = spyOn(component, "onBtnClick").and.callThrough();
 
     nameInput.value = "quick BROWN fOx";
     buttonElement.click();

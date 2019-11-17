@@ -1,4 +1,4 @@
-import { TestBed, async } from "@angular/core/testing";
+import { TestBed, tick, fakeAsync } from "@angular/core/testing";
 
 import { CoursesListService } from "./courses-list.service";
 import { CourseItemModel } from "./models/index";
@@ -6,6 +6,7 @@ import { DEFAULT_CONFIG } from "./courses.config";
 
 describe("Core.CoursesListService:", () => {
   let courseListService: CoursesListService;
+  const coursesList: Array<CourseItemModel> = DEFAULT_CONFIG;
 
   beforeEach(() => {
     spyOn(Date, "now").and.returnValue(111111111);
@@ -20,10 +21,10 @@ describe("Core.CoursesListService:", () => {
     expect(courseListService).toBeTruthy();
   });
 
-  it("should init coursesList$", async(() => {
-    const coursesList: Array<CourseItemModel> = DEFAULT_CONFIG;
-    courseListService.coursesList$.subscribe(value => {
+  it("should return coursesList$ on getSoursesList() call", fakeAsync(() => {
+    courseListService.getCoursesList().subscribe(value => {
       expect(value).toEqual(coursesList);
     });
+    tick();
   }));
 });

@@ -1,8 +1,4 @@
-import {
-  async,
-  ComponentFixture,
-  TestBed,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { By } from "@angular/platform-browser";
 
 import { FooterComponent } from "./footer.component";
@@ -28,9 +24,7 @@ describe("FooterComponent:", () => {
   });
 
   it("should contain div", () => {
-    const div: HTMLDivElement = fixture.debugElement.query(
-      By.css(".content"),
-    ).nativeElement;
+    const div: HTMLDivElement = fixture.debugElement.query(By.css(".content")).nativeElement;
     expect(div).toBeTruthy();
     expect(div.childElementCount).toBe(1);
   });

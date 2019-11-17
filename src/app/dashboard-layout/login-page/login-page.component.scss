@@ -1,0 +1,25 @@
+:host {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+}
+
+.mat-form-field {
+  width: 100%;
+  min-width: 30rem;
+}
+
+.mat-card-content {
+  display: flex;
+  justify-content: center;
+}
+
+.button {
+  display: flex;
+  justify-content: space-between;
+
+  .password-btn {
+    color: var(--soft-blue);
+    font-size: 1.2rem;
+  }
+}

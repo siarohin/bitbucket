@@ -1,15 +1,9 @@
-import {
-  async,
-  ComponentFixture,
-  TestBed,
-  tick,
-  fakeAsync,
-} from "@angular/core/testing";
+import { async, ComponentFixture, TestBed, tick, fakeAsync } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
+import { of as observableOf } from "rxjs";
 
 import { DashboardLayoutComponent } from "./dashboard-layout.component";
-import { CoursesListService, CourseItemModel } from "../core/index";
+import { CoursesListService, AuthService, CourseItemModel } from "../core/index";
 
 describe("DashboardLayoutComponent:", () => {
   let component: DashboardLayoutComponent;
@@ -25,15 +19,17 @@ describe("DashboardLayoutComponent:", () => {
     },
   ];
 
-  const courseListServiceMock: jasmine.SpyObj<
-    CoursesListService
-  > = jasmine.createSpyObj("CoursesListService", ["coursesList$"]);
+  const courseListServiceMock: jasmine.SpyObj<CoursesListService> = jasmine.createSpyObj(
+    "CoursesListService",
+    ["getCoursesList"],
+  );
 
-  const coursesList$: BehaviorSubject<
-    Array<CourseItemModel>
-  > = new BehaviorSubject(courseListMock);
+  const authServiceMock: jasmine.SpyObj<AuthService> = jasmine.createSpyObj("AuthService", [
+    "getIsAuthenticated",
+  ]);
 
-  courseListServiceMock.coursesList$ = coursesList$;
+  courseListServiceMock.getCoursesList.and.returnValue(observableOf(courseListMock));
+  authServiceMock.getIsAuthenticated.and.returnValue(observableOf(true));
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -42,6 +38,10 @@ describe("DashboardLayoutComponent:", () => {
         {
           provide: CoursesListService,
           useValue: courseListServiceMock,
+        },
+        {
+          provide: AuthService,
+          useValue: authServiceMock,
         },
       ],
       schemas: [NO_ERRORS_SCHEMA],
@@ -57,13 +57,6 @@ describe("DashboardLayoutComponent:", () => {
   it("should create", () => {
     expect(component).toBeTruthy();
   });
-
-  it("should init coursesList$", fakeAsync(() => {
-    component.coursesList$.subscribe(value => {
-      expect(value).toEqual(courseListMock);
-    });
-    tick();
-  }));
 
   it("onSearchButtonClick() should set inputValue property", () => {
     const expected = "Have you been wanting to join a book club";

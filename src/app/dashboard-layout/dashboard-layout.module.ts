@@ -4,12 +4,10 @@ import { CommonModule } from "@angular/common";
 import { SharedModule } from "../shared/index";
 import { HeaderComponent, UserEntityComponent } from "./header/index";
 import { FooterComponent } from "./footer/index";
-import {
-  CoursesListComponent,
-  CourseItemComponent,
-} from "./courses-list/index";
+import { CoursesListComponent, CourseItemComponent, DialogOverviewComponent } from "./courses-list/index";
 import { DashboardLayoutComponent } from "./dashboard-layout.component";
 import { SearchFormComponent } from "./search-form/index";
+import { LoginPageComponent } from "./login-page/index";
 
 @NgModule({
   declarations: [
@@ -20,12 +18,12 @@ import { SearchFormComponent } from "./search-form/index";
     DashboardLayoutComponent,
     UserEntityComponent,
     SearchFormComponent,
+    DialogOverviewComponent,
+    LoginPageComponent,
   ],
   imports: [CommonModule, SharedModule],
-  exports: [
-    DashboardLayoutComponent,
-    FooterComponent,
-    HeaderComponent,
-  ],
+
+  entryComponents: [DialogOverviewComponent],
+  exports: [DashboardLayoutComponent, FooterComponent, HeaderComponent],
 })
 export class DashboardLayoutModule {}

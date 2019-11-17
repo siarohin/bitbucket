@@ -24,14 +24,8 @@ describe("SharedModule.TruncatePipe:", () => {
   });
 
   it("should transform value", () => {
-    expect(
-      pipe.transform(testCase[0].value, testCase[0].length),
-    ).toBe(testCase[0].expected);
-    expect(
-      pipe.transform(testCase[1].value, testCase[1].length),
-    ).toBe(testCase[1].expected);
-    expect(pipe.transform(testCase[2].value)).toBe(
-      testCase[2].expected,
-    );
+    expect(pipe.transform(testCase[0].value, testCase[0].length)).toBe(testCase[0].expected);
+    expect(pipe.transform(testCase[1].value, testCase[1].length)).toBe(testCase[1].expected);
+    expect(pipe.transform(testCase[2].value)).toBe(testCase[2].expected);
   });
 });
