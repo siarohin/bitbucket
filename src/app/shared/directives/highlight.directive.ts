@@ -1,5 +1,6 @@
 import { Directive, ElementRef, Renderer2, Input } from "@angular/core";
 import isNil from "lodash/isNil";
+import keys from "lodash/keys";
 
 import { HighlightSchemas } from "../models/index";
 
@@ -72,11 +73,11 @@ export class HighlightDirective {
     const element: HTMLElement = this.elementRef.nativeElement;
     const schema: HighlightSchemas = this.getCourseSchema(this.creationDate);
 
-    for (const key in schema) {
-      if (schema.hasOwnProperty(key) && schema[key]) {
+    keys(schema).forEach((key: string) => {
+      if (key && schema[key]) {
         this.renderer.addClass(element, this.schemas[key]);
       }
-    }
+    });
   }
 
   private getCourseSchema(date: Date | number): HighlightSchemas {
