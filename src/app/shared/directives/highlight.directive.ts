@@ -1,10 +1,6 @@
-import {
-  Directive,
-  ElementRef,
-  Renderer2,
-  Input,
-} from "@angular/core";
+import { Directive, ElementRef, Renderer2, Input } from "@angular/core";
 import isNil from "lodash/isNil";
+import keys from "lodash/keys";
 
 import { HighlightSchemas } from "../models/index";
 
@@ -75,30 +71,24 @@ export class HighlightDirective {
 
   private highlight(): void {
     const element: HTMLElement = this.elementRef.nativeElement;
-    const schema: HighlightSchemas = this.getCourseSchema(
-      this.creationDate,
-    );
+    const schema: HighlightSchemas = this.getCourseSchema(this.creationDate);
 
-    for (const key in schema) {
-      if (schema.hasOwnProperty(key) && schema[key]) {
+    keys(schema).forEach((key: string) => {
+      if (key && schema[key]) {
         this.renderer.addClass(element, this.schemas[key]);
       }
-    }
+    });
   }
 
   private getCourseSchema(date: Date | number): HighlightSchemas {
     if (!isNil(this.creationDate) && !isNil(this.topRated)) {
-      const courseDateInMs: number =
-        date instanceof Date ? date.valueOf() : date;
+      const courseDateInMs: number = date instanceof Date ? date.valueOf() : date;
       const freshDaysInMs: number = DAYS_NUMBER * 24 * 60 * 60 * 1000;
       const currentDayInMs: number = Date.now();
       const differenceInMs: number = currentDayInMs - freshDaysInMs;
 
-      const isFreshCourse: boolean =
-        courseDateInMs < currentDayInMs &&
-        courseDateInMs >= differenceInMs;
-      const isPlannedCourse: boolean =
-        courseDateInMs > currentDayInMs;
+      const isFreshCourse: boolean = courseDateInMs < currentDayInMs && courseDateInMs >= differenceInMs;
+      const isPlannedCourse: boolean = courseDateInMs > currentDayInMs;
       const isTopRated: boolean = this.topRated;
 
       const schema: HighlightSchemas = {

@@ -1,28 +1,12 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-  Output,
-  EventEmitter,
-} from "@angular/core";
+import { Component, Input, ChangeDetectionStrategy, Output, EventEmitter } from "@angular/core";
 
-import {
-  FA_ICONS,
-  IconDefinition,
-  HighlightSchemas,
-} from "../../../shared/index";
+import { FA_ICONS, IconDefinition, HighlightSchemas } from "../../../shared/index";
 import { CourseItemModel } from "../../../core/index";
 
 /**
  * Font Awesome icons from shared module
  */
-const {
-  faClock,
-  faCalendarAlt,
-  faPen,
-  faTrashAlt,
-  faStar,
-} = FA_ICONS;
+const { faClock, faCalendarAlt, faPen, faTrashAlt, faStar } = FA_ICONS;
 
 /**
  * Simple component that represents course item

@@ -1,17 +1,13 @@
-import {
-  Component,
-  Input,
-  ChangeDetectionStrategy,
-} from "@angular/core";
-import isNil from "lodash/isNil";
+import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { MatDialog } from "@angular/material/dialog";
+import { Subscription } from "rxjs";
+import { publishReplay, refCount, map } from "rxjs/operators";
 import isEmpty from "lodash/isEmpty";
+import isNil from "lodash/isNil";
 
-import {
-  FA_ICONS,
-  IconDefinition,
-  OrderByPipe,
-} from "../../shared/index";
-import { CourseItemModel } from "../../core/index";
+import { FA_ICONS, IconDefinition, OrderByPipe } from "../../shared/index";
+import { CourseItemModel, CoursesListService } from "../../core/index";
+import { DialogOverviewComponent, DialogData } from "./dialog-overview/index";
 
 /**
  * Font Awesome icons from shared module
@@ -29,41 +25,34 @@ export const SORT_PARAMETER: {
 };
 
 /**
- * Simple component that contains list of course's items
+ * Smart component that contains list of course's items
  */
 @Component({
   selector: "app-courses-list",
   templateUrl: "./courses-list.component.html",
   styleUrls: ["./courses-list.component.scss"],
   providers: [OrderByPipe],
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CoursesListComponent {
+export class CoursesListComponent implements OnInit, OnDestroy {
+  private subscription: Subscription;
+  private coursesListService: CoursesListService;
   private orderBy: OrderByPipe;
-  private coursesListBF: Array<CourseItemModel>;
   private inputValueBF: string;
+
+  /**
+   * Modal dialog
+   */
+  public dialog: MatDialog;
+
+  /**
+   * Array from course items
+   */
+  public coursesList: Array<CourseItemModel>;
 
   /**
    * Fontawesome icons
    */
   public faPlus: IconDefinition = faPlus;
-
-  /**
-   * Set courses list
-   * Param {{ Array<CourseItemModel> }}
-   */
-  @Input()
-  public set coursesList(value: Array<CourseItemModel>) {
-    this.coursesListBF = value;
-  }
-
-  /**
-   * Get courses list
-   * Return {{ Array<CourseItemModel> }}
-   */
-  public get coursesList(): Array<CourseItemModel> {
-    return this.coursesListBF;
-  }
 
   /**
    * Set user's input value
@@ -72,7 +61,7 @@ export class CoursesListComponent {
   @Input()
   public set inputValue(value: string) {
     this.inputValueBF = value;
-    this.orderByCoursesList();
+    this.coursesList = this.orderByCoursesList();
   }
 
   /**
@@ -83,8 +72,31 @@ export class CoursesListComponent {
     return this.inputValueBF;
   }
 
-  constructor(orderBy: OrderByPipe) {
+  constructor(orderBy: OrderByPipe, coursesListService: CoursesListService, dialog: MatDialog) {
     this.orderBy = orderBy;
+    this.coursesListService = coursesListService;
+    this.dialog = dialog;
+  }
+
+  /**
+   * ngOnInit
+   */
+  public ngOnInit(): void {
+    this.subscription = this.coursesListService
+      .getCoursesList()
+      .pipe(
+        map(coursesList => this.orderByCoursesList(coursesList)),
+        publishReplay(1),
+        refCount(),
+      )
+      .subscribe(coursesList => (this.coursesList = coursesList));
+  }
+
+  /**
+   * ngOnDestroy
+   */
+  public ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   /**
@@ -95,21 +107,34 @@ export class CoursesListComponent {
   }
 
   /**
-   * Delete course item on button click
+   * On remove button click
    */
-  public onDeleteCourse(courseId: number): void {
-    console.log(courseId);
+  public onRemoveCourse(courseId: number): void {
+    this.openDialog(courseId);
   }
 
-  private orderByCoursesList(): void {
+  private orderByCoursesList(coursesList: Array<CourseItemModel> = this.coursesList): Array<CourseItemModel> {
     const parameter: keyof CourseItemModel = !isEmpty(this.inputValue)
       ? SORT_PARAMETER.valid
       : SORT_PARAMETER.invalid;
+    return this.orderBy.transform(coursesList, parameter);
+  }
 
-    const coursesList: Array<
-      CourseItemModel
-    > = this.orderBy.transform(this.coursesList, parameter);
+  private openDialog(courseId: number): void {
+    const dialogData: DialogData = {
+      title: "Do you really want to delete this course?",
+      id: courseId,
+    };
+    const dialogRef = this.dialog.open(DialogOverviewComponent, {
+      width: "30rem",
+      data: dialogData,
+    });
 
-    this.coursesList = coursesList;
+    dialogRef.afterClosed().subscribe((data: DialogData) => {
+      if (!isNil(data) && !isNil(data.id)) {
+        const { id } = data;
+        this.coursesListService.removeCourseItem(id);
+      }
+    });
   }
 }

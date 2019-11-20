@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
-import { UserEntityComponent } from "./user-entity.component";
+import { DialogOverviewComponent } from "./dialog-overview.component";
 
-describe("UserEntityComponent:", () => {
-  let component: UserEntityComponent;
-  let fixture: ComponentFixture<UserEntityComponent>;
+xdescribe("DialogOverviewComponent", () => {
+  let component: DialogOverviewComponent;
+  let fixture: ComponentFixture<DialogOverviewComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [UserEntityComponent],
+      declarations: [DialogOverviewComponent],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(UserEntityComponent);
+    fixture = TestBed.createComponent(DialogOverviewComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

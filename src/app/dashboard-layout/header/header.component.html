@@ -1,5 +1,9 @@
 <div class="header">
   <img src="./assets/images/logo.svg" class="logo" />
 
-  <app-user-entity></app-user-entity>
+  <app-user-entity
+    *ngIf="isAuthenticated"
+    [user]="user"
+    (logoffButtonClick)="onLogoffButtonClick($event)"
+  ></app-user-entity>
 </div>

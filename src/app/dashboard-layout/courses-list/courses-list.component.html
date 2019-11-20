@@ -11,7 +11,7 @@
           *ngFor="let item of coursesList; last as isLast"
           [course]="item"
           [isLast]="isLast"
-          (deleteButtonClick)="onDeleteCourse($event)"
+          (deleteButtonClick)="onRemoveCourse($event)"
         ></app-course-item>
       </div>
     </div>
