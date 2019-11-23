@@ -1,17 +1,19 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 
 import { AuthService, UserAuthModel } from "../core/index";
+import { AutoUnsubscribe } from "../shared/index";
 
 /**
  * Dashboard layout component
  */
+@AutoUnsubscribe()
 @Component({
   selector: "app-dashboard-layout",
   templateUrl: "./dashboard-layout.component.html",
   styleUrls: ["./dashboard-layout.component.scss"],
 })
-export class DashboardLayoutComponent implements OnInit, OnDestroy {
+export class DashboardLayoutComponent implements OnInit {
   private authService: AuthService;
   private subscription: Subscription;
 
@@ -36,13 +38,6 @@ export class DashboardLayoutComponent implements OnInit, OnDestroy {
     this.subscription = this.authService.getIsAuthenticated().subscribe(isAuthenticated => {
       this.isAuthenticated = isAuthenticated;
     });
-  }
-
-  /**
-   * ngOnDestroy
-   */
-  public ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   /**

@@ -1,0 +1,31 @@
+// default mat-chip styles
+$mat-chip-margin: 0 0.4rem;
+
+:host {
+  ::ng-deep {
+    .mat-chip-list-wrapper .mat-standard-chip {
+      margin: $mat-chip-margin;
+    }
+
+    .mat-standard-chip {
+      padding: $mat-chip-margin;
+      border-radius: 0.4rem;
+      height: auto;
+    }
+
+    .mat-standard-chip.mat-chip-with-trailing-icon {
+      padding: $mat-chip-margin;
+    }
+  }
+}
+
+.mat-form-field {
+  display: block;
+  width: 100%;
+
+  .mat-chip {
+    min-height: auto;
+    font-size: 1.2rem;
+    font-weight: var(--font-weight-thin);
+  }
+}

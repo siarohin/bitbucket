@@ -1,0 +1,14 @@
+<mat-form-field appearance="outline">
+  <mat-label
+    >Duration
+    <span class="mat-label__convert" *ngIf="isValid">{{ duration.value | convertTime }}</span></mat-label
+  >
+  <input
+    matInput
+    required
+    [formControl]="duration"
+    pattern="[0-9]*"
+    (keyup)="onKeyUp()"
+    (change)="onDurationChange()"
+  />
+</mat-form-field>

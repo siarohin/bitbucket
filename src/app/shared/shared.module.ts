@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
-import { FormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { HttpClientModule } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { MatButtonModule } from "@angular/material/button";
@@ -8,6 +8,10 @@ import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
+import { MatDatepickerModule } from "@angular/material/datepicker";
+import { MatNativeDateModule } from "@angular/material";
+import { MatChipsModule } from "@angular/material/chips";
+import { MatIconModule } from "@angular/material/icon";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IconDefinition, faClock, faCalendarAlt } from "@fortawesome/free-regular-svg-icons";
 import {
@@ -49,9 +53,15 @@ export const FA_ICONS: { [key: string]: IconDefinition } = {
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatChipsModule,
+    MatIconModule,
     FontAwesomeModule,
     FormsModule,
+    ReactiveFormsModule,
   ],
+  providers: [MatNativeDateModule],
   exports: [
     BrowserAnimationsModule,
     HttpClientModule,
@@ -60,7 +70,11 @@ export const FA_ICONS: { [key: string]: IconDefinition } = {
     MatDialogModule,
     MatFormFieldModule,
     MatInputModule,
+    MatDatepickerModule,
+    MatChipsModule,
+    MatIconModule,
     FormsModule,
+    ReactiveFormsModule,
     FontAwesomeModule,
     ConvertTimePipe,
     TruncatePipe,
