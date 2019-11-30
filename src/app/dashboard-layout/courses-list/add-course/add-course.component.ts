@@ -2,7 +2,7 @@ import { Component, Inject, ChangeDetectionStrategy, OnInit } from "@angular/cor
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
-import { DialogParamsModel } from "../../../core/index";
+import { DialogParamsModel, DialogAction, Dictionary } from "../../../core/index";
 
 /**
  * Simple component that represents dialog on add course
@@ -65,7 +65,7 @@ export class AddCourseComponent implements OnInit {
    * On submit button click
    */
   public onSubmit(): void {
-    const params: DialogParamsModel = { action: "create", data: this.courseForm.value };
+    const params: DialogParamsModel = { action: DialogAction.Create, data: this.courseForm.value };
     this.dialogRef.close(params);
   }
 
@@ -88,9 +88,9 @@ export class AddCourseComponent implements OnInit {
 
   /**
    * On change authors value
-   * param {{ Array<{ [key: string]: string }> }}
+   * param {{ Array<Dictionary<string>> }}
    */
-  public onChangeAuthors(authors: Array<{ [key: string]: string }>): void {
+  public onChangeAuthors(authors: Array<Dictionary<string>>): void {
     this.courseForm.patchValue({ authors });
   }
 }

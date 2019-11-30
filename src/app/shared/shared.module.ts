@@ -26,11 +26,12 @@ import {
 
 import { ConvertTimePipe, TruncatePipe, OrderByPipe } from "./pipes/index";
 import { HighlightDirective } from "./directives/index";
+import { Dictionary } from "../core/index";
 
 /**
  * Font Awesome icons
  */
-export const FA_ICONS: { [key: string]: IconDefinition } = {
+export const FA_ICONS: Dictionary<IconDefinition> = {
   faClock,
   faCalendarAlt,
   faPlus,

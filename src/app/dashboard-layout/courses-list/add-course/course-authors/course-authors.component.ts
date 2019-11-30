@@ -4,11 +4,12 @@ import { MatChipInputEvent } from "@angular/material/chips";
 import { Subscription, BehaviorSubject } from "rxjs";
 
 import { AutoUnsubscribe } from "../../../../shared/index";
+import { Dictionary } from "../../../../core/index";
 
 /**
  * Array with default authors
  */
-const AUTHORS: Array<{ [key: string]: string }> = [{ name: "John Doe" }, { name: "Yohan Smitz" }];
+const AUTHORS: Array<Dictionary<string>> = [{ name: "John Doe" }, { name: "Yohan Smitz" }];
 
 /**
  * Array with keyCodes
@@ -26,13 +27,13 @@ const KEY_KODES: Array<number> = [ENTER, COMMA];
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CourseAuthorsComponent implements OnInit {
-  private courseAuthorsSubj: BehaviorSubject<Array<{ [key: string]: string }>> = new BehaviorSubject(AUTHORS);
+  private courseAuthorsSubj: BehaviorSubject<Array<Dictionary<string>>> = new BehaviorSubject(AUTHORS);
   private subscription: Subscription;
 
   /**
    * List of authors
    */
-  public authorsList: Array<{ [key: string]: string }> = AUTHORS;
+  public authorsList: Array<Dictionary<string>> = AUTHORS;
 
   /**
    * Whether or not this chip list is selectable
@@ -58,7 +59,7 @@ export class CourseAuthorsComponent implements OnInit {
    * Event emitter for authors changes
    */
   @Output()
-  public changeAuthors: EventEmitter<Array<{ [key: string]: string }>> = new EventEmitter();
+  public changeAuthors: EventEmitter<Array<Dictionary<string>>> = new EventEmitter();
 
   /**
    * ngOnInit
@@ -75,11 +76,11 @@ export class CourseAuthorsComponent implements OnInit {
    */
   public add(event: MatChipInputEvent): void {
     const input = event.input;
-    const value = event.value;
+    const value = event.value || "";
 
     // Add author
-    if ((value || "").trim()) {
-      const authors: Array<{ [key: string]: string }> = [...this.authorsList, { name: value.trim() }];
+    if (value.trim()) {
+      const authors: Array<Dictionary<string>> = [...this.authorsList, { name: value.trim() }];
       this.updateAuthors(authors);
     }
 
@@ -91,14 +92,14 @@ export class CourseAuthorsComponent implements OnInit {
 
   /**
    * Remove author from list
-   * param {{ { [key: string]: string } }}
+   * param {{ Dictionary<string> }}
    */
-  public remove(author: { [key: string]: string }): void {
+  public remove(author: Dictionary<string>): void {
     const authors = this.authorsList.filter(param => author.name !== param.name);
     this.updateAuthors(authors);
   }
 
-  private updateAuthors(authors: Array<{ [key: string]: string }>): void {
+  private updateAuthors(authors: Array<Dictionary<string>>): void {
     this.authorsList = [...authors];
     this.courseAuthorsSubj.next(authors);
   }

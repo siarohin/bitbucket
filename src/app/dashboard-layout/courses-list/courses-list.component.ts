@@ -8,7 +8,13 @@ import last from "lodash/last";
 import assign from "lodash/assign";
 
 import { FA_ICONS, IconDefinition, OrderByPipe, AutoUnsubscribe } from "../../shared/index";
-import { CourseItemModel, CoursesListService, DialogParamsModel } from "../../core/index";
+import {
+  CourseItemModel,
+  CoursesListService,
+  DialogParamsModel,
+  DialogAction,
+  Dictionary,
+} from "../../core/index";
 import { DeleteCourseComponent } from "./delete-course/index";
 import { AddCourseComponent } from "./add-course/index";
 
@@ -20,9 +26,7 @@ const { faPlus } = FA_ICONS;
 /**
  * Default sort keys for sortBy directive
  */
-export const SORT_PARAMETER: {
-  [key: string]: keyof CourseItemModel;
-} = {
+export const SORT_PARAMETER: Dictionary<keyof CourseItemModel> = {
   valid: "title",
   invalid: "creationDate",
 };
@@ -109,7 +113,7 @@ export class CoursesListComponent implements OnInit {
   public onRemoveCourse(courseId: number): void {
     const title = "Do you really want to delete this course?";
     const data: CourseItemModel = { id: courseId, title };
-    const params: DialogParamsModel = { action: "remove", data };
+    const params: DialogParamsModel = { action: DialogAction.Remove, data };
     this.openDialog(params);
   }
 
@@ -119,7 +123,7 @@ export class CoursesListComponent implements OnInit {
   public onAddCourse(): void {
     const title = "New course";
     const data: CourseItemModel = { title };
-    const params: DialogParamsModel = { action: "create", data };
+    const params: DialogParamsModel = { action: DialogAction.Create, data };
     this.openDialog(params);
   }
 
@@ -131,7 +135,8 @@ export class CoursesListComponent implements OnInit {
   }
 
   private openDialog(params: DialogParamsModel): void {
-    const component = params.action === "remove" ? DeleteCourseComponent : AddCourseComponent;
+    const component: typeof DeleteCourseComponent | typeof AddCourseComponent =
+      params.action === DialogAction.Remove ? DeleteCourseComponent : AddCourseComponent;
     const dialogRef = this.dialog.open(component, { disableClose: true, data: params });
 
     dialogRef.afterClosed().subscribe((param: DialogParamsModel) => {
@@ -143,9 +148,9 @@ export class CoursesListComponent implements OnInit {
 
       const { action, data } = param;
 
-      if (action === "remove") {
+      if (action === DialogAction.Remove) {
         this.coursesListService.removeCourseItem(data.id);
-      } else if (action === "create") {
+      } else if (action === DialogAction.Create) {
         const id: number = this.createCourseId();
         const courseItem: CourseItemModel = assign({}, data, { id });
         this.coursesListService.createCourseItem(courseItem);

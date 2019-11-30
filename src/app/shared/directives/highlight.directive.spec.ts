@@ -4,7 +4,7 @@ import { By } from "@angular/platform-browser";
 import assign from "lodash/assign";
 
 import { HighlightDirective } from "./highlight.directive";
-import { CourseItemModel } from "../../core/index";
+import { CourseItemModel, Dictionary } from "../../core/index";
 import { HighlightSchemas } from "../models/index";
 
 describe("SharedModule.HighlightDirective:", () => {
@@ -30,7 +30,7 @@ describe("SharedModule.HighlightDirective:", () => {
 
   it("should set planned property to classList", () => {
     // November, 29
-    const testData: { [key: string]: Date | number } = {
+    const testData: Dictionary<Date | number> = {
       creationDate: new Date(2019, 10, 29, 14, 0, 0, 0),
     };
     testComponent.course = assign({}, testComponent.course, testData);
@@ -42,7 +42,7 @@ describe("SharedModule.HighlightDirective:", () => {
 
   it("should set fresh property to classList", () => {
     // November, 1
-    const testData: { [key: string]: Date | number } = {
+    const testData: Dictionary<Date | number> = {
       creationDate: new Date(2019, 10, 1, 14, 0, 0, 0),
     };
     testComponent.course = assign({}, testComponent.course, testData);
@@ -54,7 +54,7 @@ describe("SharedModule.HighlightDirective:", () => {
 
   it("should not set property to classList", () => {
     // prettier-ignore
-    const testData: {[key: string]: Date | number} = {creationDate: undefined};
+    const testData: Dictionary<Date | number> = {creationDate: undefined};
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
 
@@ -65,7 +65,7 @@ describe("SharedModule.HighlightDirective:", () => {
   });
 
   it("should set top rated property to classList", () => {
-    const testData: { [key: string]: boolean | Date | number } = {
+    const testData: Dictionary<Date | number | boolean> = {
       isTopRated: true,
       creationDate: new Date(2019, 10, 1, 14, 0, 0, 0),
     };
