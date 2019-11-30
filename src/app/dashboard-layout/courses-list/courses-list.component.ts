@@ -1,13 +1,22 @@
-import { Component, Input, OnInit, OnDestroy } from "@angular/core";
+import { Component, Input, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { Subscription } from "rxjs";
 import { publishReplay, refCount, map } from "rxjs/operators";
 import isEmpty from "lodash/isEmpty";
 import isNil from "lodash/isNil";
+import last from "lodash/last";
+import assign from "lodash/assign";
 
-import { FA_ICONS, IconDefinition, OrderByPipe } from "../../shared/index";
-import { CourseItemModel, CoursesListService } from "../../core/index";
-import { DialogOverviewComponent, DialogData } from "./dialog-overview/index";
+import { FA_ICONS, IconDefinition, OrderByPipe, AutoUnsubscribe } from "../../shared/index";
+import {
+  CourseItemModel,
+  CoursesListService,
+  DialogParamsModel,
+  DialogAction,
+  Dictionary,
+} from "../../core/index";
+import { DeleteCourseComponent } from "./delete-course/index";
+import { AddCourseComponent } from "./add-course/index";
 
 /**
  * Font Awesome icons from shared module
@@ -17,9 +26,7 @@ const { faPlus } = FA_ICONS;
 /**
  * Default sort keys for sortBy directive
  */
-export const SORT_PARAMETER: {
-  [key: string]: keyof CourseItemModel;
-} = {
+export const SORT_PARAMETER: Dictionary<keyof CourseItemModel> = {
   valid: "title",
   invalid: "creationDate",
 };
@@ -27,13 +34,14 @@ export const SORT_PARAMETER: {
 /**
  * Smart component that contains list of course's items
  */
+@AutoUnsubscribe()
 @Component({
   selector: "app-courses-list",
   templateUrl: "./courses-list.component.html",
   styleUrls: ["./courses-list.component.scss"],
   providers: [OrderByPipe],
 })
-export class CoursesListComponent implements OnInit, OnDestroy {
+export class CoursesListComponent implements OnInit {
   private subscription: Subscription;
   private coursesListService: CoursesListService;
   private orderBy: OrderByPipe;
@@ -93,13 +101,6 @@ export class CoursesListComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * ngOnDestroy
-   */
-  public ngOnDestroy(): void {
-    this.subscription.unsubscribe();
-  }
-
-  /**
    * On load button click
    */
   public onLoadBtnClick(): void {
@@ -110,7 +111,20 @@ export class CoursesListComponent implements OnInit, OnDestroy {
    * On remove button click
    */
   public onRemoveCourse(courseId: number): void {
-    this.openDialog(courseId);
+    const title = "Do you really want to delete this course?";
+    const data: CourseItemModel = { id: courseId, title };
+    const params: DialogParamsModel = { action: DialogAction.Remove, data };
+    this.openDialog(params);
+  }
+
+  /**
+   * On add course button click
+   */
+  public onAddCourse(): void {
+    const title = "New course";
+    const data: CourseItemModel = { title };
+    const params: DialogParamsModel = { action: DialogAction.Create, data };
+    this.openDialog(params);
   }
 
   private orderByCoursesList(coursesList: Array<CourseItemModel> = this.coursesList): Array<CourseItemModel> {
@@ -120,21 +134,32 @@ export class CoursesListComponent implements OnInit, OnDestroy {
     return this.orderBy.transform(coursesList, parameter);
   }
 
-  private openDialog(courseId: number): void {
-    const dialogData: DialogData = {
-      title: "Do you really want to delete this course?",
-      id: courseId,
-    };
-    const dialogRef = this.dialog.open(DialogOverviewComponent, {
-      width: "30rem",
-      data: dialogData,
-    });
+  private openDialog(params: DialogParamsModel): void {
+    const component: typeof DeleteCourseComponent | typeof AddCourseComponent =
+      params.action === DialogAction.Remove ? DeleteCourseComponent : AddCourseComponent;
+    const dialogRef = this.dialog.open(component, { disableClose: true, data: params });
 
-    dialogRef.afterClosed().subscribe((data: DialogData) => {
-      if (!isNil(data) && !isNil(data.id)) {
-        const { id } = data;
-        this.coursesListService.removeCourseItem(id);
+    dialogRef.afterClosed().subscribe((param: DialogParamsModel) => {
+      const isValid: boolean = !isNil(param);
+
+      if (!isValid) {
+        return;
+      }
+
+      const { action, data } = param;
+
+      if (action === DialogAction.Remove) {
+        this.coursesListService.removeCourseItem(data.id);
+      } else if (action === DialogAction.Create) {
+        const id: number = this.createCourseId();
+        const courseItem: CourseItemModel = assign({}, data, { id });
+        this.coursesListService.createCourseItem(courseItem);
       }
     });
+  }
+
+  private createCourseId(): number {
+    const lastCourse: CourseItemModel = last(this.orderBy.transform(this.coursesList, "id"));
+    return lastCourse.id + 1;
   }
 }

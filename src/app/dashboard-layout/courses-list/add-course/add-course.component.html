@@ -1,0 +1,27 @@
+<mat-card>
+  <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
+    <mat-card-title>{{ params.data.title }}</mat-card-title>
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <mat-label>Title</mat-label>
+        <input matInput formControlName="title" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Description</mat-label>
+        <textarea matInput formControlName="description" class="text-area"></textarea>
+      </mat-form-field>
+
+      <div class="course-fields">
+        <app-duration-course (changeDuration)="onChangeDuration($event)"></app-duration-course>
+        <app-creation-course-date (changeDate)="onChangeDate($event)"></app-creation-course-date>
+        <app-course-authors (changeAuthors)="onChangeAuthors($event)"></app-course-authors>
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions class="actions">
+      <button mat-flat-button type="button" (click)="onCancelClick()" class="btn">Cancel</button>
+      <button mat-flat-button type="submit" [disabled]="!courseForm.valid" class="submit-btn">Save</button>
+    </mat-card-actions>
+  </form>
+</mat-card>

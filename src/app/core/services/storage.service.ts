@@ -3,6 +3,8 @@ import assign from "lodash/assign";
 import omit from "lodash/omit";
 import isNil from "lodash/isNil";
 
+import { Dictionary } from "./models/index";
+
 /**
  * The prefix for bitbucket app to read and write data
  */
@@ -17,7 +19,7 @@ export class StorageService {
    * Read data from local storage
    * returns {{ any }}
    */
-  public getItems(): { [key: string]: any } {
+  public getItems(): Dictionary<any> {
     const storage = localStorage.getItem(STORAGE_KEY);
     return JSON.parse(storage);
   }
@@ -37,8 +39,8 @@ export class StorageService {
    * param {{ any }} value
    */
   public setItem(storageKey: string, value: any): void {
-    const storage: { [key: string]: any } = this.getItems();
-    const newStorage: { [key: string]: any } = assign({}, storage, { [storageKey]: value });
+    const storage: Dictionary<any> = this.getItems();
+    const newStorage: Dictionary<any> = assign({}, storage, { [storageKey]: value });
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newStorage));
   }
 
@@ -54,8 +56,8 @@ export class StorageService {
    * param {{ Array<string> }} storageKey
    */
   public removeItem(storageKey: Array<string>): void {
-    const storage: { [key: string]: any } = this.getItems();
-    const newStorage: { [key: string]: any } = omit(storage, [...storageKey]);
+    const storage: Dictionary<any> = this.getItems();
+    const newStorage: Dictionary<any> = omit(storage, [...storageKey]);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(newStorage));
   }
 }

@@ -1,14 +1,16 @@
-import { Component, OnInit, OnDestroy } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import { Subscription } from "rxjs";
 
 import { AuthService, UserAuthModel } from "../../core/index";
+import { AutoUnsubscribe } from "../../shared/index";
 
+@AutoUnsubscribe()
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
   styleUrls: ["./header.component.scss"],
 })
-export class HeaderComponent implements OnInit, OnDestroy {
+export class HeaderComponent implements OnInit {
   private authService: AuthService;
   private subscription: Subscription;
 
@@ -38,13 +40,6 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.user = user;
       }),
     );
-  }
-
-  /**
-   * ngOnDestroy
-   */
-  public ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   /**

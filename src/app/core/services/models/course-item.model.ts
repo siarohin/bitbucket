@@ -3,29 +3,29 @@
  */
 export interface CourseItemModel {
   /**
-   * id of course item
-   */
-  id: number;
-
-  /**
    * title of course
    */
   title: string;
 
   /**
+   * id of course item
+   */
+  id?: number;
+
+  /**
    * creation date
    */
-  creationDate: Date | number;
+  creationDate?: Date | number;
 
   /**
    * course's duration in minutes
    */
-  duration: number;
+  duration?: number;
 
   /**
    * description for course item
    */
-  description: string;
+  description?: string;
 
   /**
    * top rated field

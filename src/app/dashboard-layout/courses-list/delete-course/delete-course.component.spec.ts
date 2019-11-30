@@ -1,21 +1,21 @@
 import { async, ComponentFixture, TestBed } from "@angular/core/testing";
 import { NO_ERRORS_SCHEMA } from "@angular/core";
 
-import { DialogOverviewComponent } from "./dialog-overview.component";
+import { DeleteCourseComponent } from "./delete-course.component";
 
 xdescribe("DialogOverviewComponent", () => {
-  let component: DialogOverviewComponent;
-  let fixture: ComponentFixture<DialogOverviewComponent>;
+  let component: DeleteCourseComponent;
+  let fixture: ComponentFixture<DeleteCourseComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [DialogOverviewComponent],
+      declarations: [DeleteCourseComponent],
       schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DialogOverviewComponent);
+    fixture = TestBed.createComponent(DeleteCourseComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

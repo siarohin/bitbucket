@@ -1,15 +1,16 @@
-import { Component, Output, EventEmitter } from "@angular/core";
+import { Component, Output, EventEmitter, ChangeDetectionStrategy } from "@angular/core";
 import { NgForm } from "@angular/forms";
 
 import { UserAuthModel } from "../../core/index";
 
 /**
- * Login page component
+ * Simple component that represents login page
  */
 @Component({
   selector: "app-login-page",
   templateUrl: "./login-page.component.html",
   styleUrls: ["./login-page.component.scss"],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
   /**

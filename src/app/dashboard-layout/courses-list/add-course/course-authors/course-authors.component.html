@@ -1,0 +1,23 @@
+<mat-form-field appearance="outline">
+  <mat-label>Authors</mat-label>
+  <mat-chip-list #chipList aria-label="Author selection">
+    <mat-chip
+      *ngFor="let author of authorsList"
+      [selectable]="isSelectable"
+      [removable]="isRemovable"
+      (removed)="remove(author)"
+    >
+      {{ author.name }}
+      <mat-icon matChipRemove *ngIf="isRemovable">cancel</mat-icon>
+    </mat-chip>
+
+    <input
+      matInput
+      required
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+      [matChipInputAddOnBlur]="isAddOnBlur"
+      (matChipInputTokenEnd)="add($event)"
+    />
+  </mat-chip-list>
+</mat-form-field>

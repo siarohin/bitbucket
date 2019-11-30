@@ -1,0 +1,97 @@
+// default mat-dialog-container styles
+$mat-dialog-container-padding: 2.4rem;
+
+:host {
+  display: flex;
+  justify-content: center;
+  margin: 0;
+
+  ::ng-deep {
+    .mat-form-field-wrapper {
+      padding: 0;
+    }
+
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-start,
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-end,
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick .mat-form-field-outline-gap {
+      border-width: 0.1rem;
+    }
+
+    .mat-form-field-appearance-outline .mat-form-field-outline-thick {
+      color: var(--pale-grey);
+    }
+  }
+}
+
+.mat-card {
+  width: 100%;
+  box-shadow: none;
+  margin: -$mat-dialog-container-padding;
+
+  .mat-card-content,
+  .mat-card-content > * {
+    width: 100%;
+  }
+
+  .mat-card-content {
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+  }
+
+  .mat-card-title {
+    margin-bottom: 1.4rem;
+  }
+
+  .mat-form-field {
+    width: 100%;
+
+    .text-area {
+      height: 9.6rem;
+    }
+  }
+}
+
+.actions,
+.actions:last-child {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0;
+  padding-bottom: 0;
+
+  .btn {
+    background: var(--light);
+    margin-right: 1rem;
+  }
+
+  .submit-btn {
+    background: var(--green);
+    color: var(--white);
+
+    &[disabled] {
+      opacity: 0.5;
+    }
+  }
+}
+
+.course-fields {
+  display: grid;
+  grid-template-areas:
+    "duration . ."
+    "date . ."
+    "authors authors authors";
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 6rem);
+
+  app-duration-course {
+    grid-area: duration;
+  }
+
+  app-creation-course-date {
+    grid-area: date;
+  }
+
+  app-course-authors {
+    grid-area: authors;
+  }
+}

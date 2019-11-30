@@ -1,3 +1,4 @@
+// tslint:disable:no-shadowed-variable
 import { ConvertTimePipe } from "./convert-time.pipe";
 
 describe("SharedModule.ConvertTimePipe:", () => {
