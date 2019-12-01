@@ -51,7 +51,7 @@ export class CoursesListService {
    */
   public updateCourseItem(couseItem: CourseItemModel): void {
     const indexToUpdate: number = this.coursesList.findIndex(item => item.id === couseItem.id);
-    this.coursesList = this.coursesList.splice(indexToUpdate, 1, couseItem);
+    this.coursesList[indexToUpdate] = couseItem;
     this.coursesListSubj.next(this.coursesList);
   }
 

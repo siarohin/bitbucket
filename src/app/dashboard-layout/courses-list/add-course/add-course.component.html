@@ -13,8 +13,14 @@
       </mat-form-field>
 
       <div class="course-fields">
-        <app-duration-course (changeDuration)="onChangeDuration($event)"></app-duration-course>
-        <app-creation-course-date (changeDate)="onChangeDate($event)"></app-creation-course-date>
+        <app-duration-course
+          [durationValue]="getDuration()"
+          (changeDuration)="onChangeDuration($event)"
+        ></app-duration-course>
+        <app-creation-course-date
+          [dateValue]="getDate()"
+          (changeDate)="onChangeDate($event)"
+        ></app-creation-course-date>
         <app-course-authors (changeAuthors)="onChangeAuthors($event)"></app-course-authors>
       </div>
     </mat-card-content>

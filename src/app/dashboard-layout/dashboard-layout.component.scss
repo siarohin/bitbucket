@@ -6,17 +6,17 @@ $padding-layout: 0 8.5rem;
   grid-template-areas:
     "breadcrumb"
     "search-form"
-    "courses-list";
+    "content";
   grid-template-rows: 6.4rem 11.4rem auto;
   background: var(--pale-grey);
 
-  app-search-form {
+  .search {
     grid-area: search-form;
     padding: $padding-layout;
   }
 
-  app-courses-list {
-    grid-area: courses-list;
+  .content {
+    grid-area: content;
     padding: $padding-layout;
   }
 
@@ -33,13 +33,4 @@ $padding-layout: 0 8.5rem;
       color: var(--dark);
     }
   }
-}
-
-app-login-page {
-  height: calc(100vh - 12.8rem);
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-  background: var(--pale-grey);
 }

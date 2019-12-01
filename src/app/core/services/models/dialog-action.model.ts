@@ -4,4 +4,5 @@
 export enum DialogAction {
   Create = "create",
   Remove = "remove",
+  Edit = "edit",
 }

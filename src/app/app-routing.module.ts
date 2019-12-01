@@ -1,17 +1,11 @@
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 
-import { DashboardLayoutComponent } from "./dashboard-layout/index";
-
 const routes: Routes = [
   {
     path: "",
-    component: DashboardLayoutComponent,
+    redirectTo: "/courses",
     pathMatch: "full",
-  },
-  {
-    path: "**",
-    component: DashboardLayoutComponent,
   },
 ];
 

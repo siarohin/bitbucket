@@ -12,6 +12,8 @@
           [course]="item"
           [isLast]="isLast"
           (deleteButtonClick)="onRemoveCourse($event)"
+          (editButtonClick)="onEditCourse($event)"
+          (courseItemClick)="onShowCourse($event)"
         ></app-course-item>
       </div>
     </div>

@@ -38,6 +38,11 @@ mat-card {
       margin: 0;
       color: var(--dark);
       justify-self: start;
+
+      &:hover {
+        cursor: pointer;
+        color: var(--green);
+      }
     }
 
     .top-star {

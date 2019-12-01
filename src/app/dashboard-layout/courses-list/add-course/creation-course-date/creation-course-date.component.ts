@@ -1,13 +1,17 @@
-import { Component, OnInit, ChangeDetectionStrategy, Output, EventEmitter } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import { Subscription, BehaviorSubject } from "rxjs";
-
-import { AutoUnsubscribe } from "../../../../shared/index";
+import {
+  Component,
+  OnInit,
+  ChangeDetectionStrategy,
+  Output,
+  EventEmitter,
+  Inject,
+  Input,
+} from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 /**
  * Simple component that represents course's date creation
  */
-@AutoUnsubscribe()
 @Component({
   selector: "app-creation-course-date",
   templateUrl: "./creation-course-date.component.html",
@@ -15,15 +19,18 @@ import { AutoUnsubscribe } from "../../../../shared/index";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CreationCourseDateComponent implements OnInit {
-  private currentDate: string = new Date().toISOString();
-  private changeDateSubj: BehaviorSubject<string> = new BehaviorSubject(this.currentDate);
-  private isValid = true;
-  private subscription: Subscription;
+  private fb: FormBuilder;
+
+  /**
+   * Form group
+   */
+  public courseForm: FormGroup;
 
   /**
    * serializedDate
    */
-  public serializedDate: FormControl = new FormControl(new Date().toISOString());
+  @Input()
+  public dateValue: string;
 
   /**
    * Event emitter for course's date changes
@@ -31,29 +38,24 @@ export class CreationCourseDateComponent implements OnInit {
   @Output()
   public changeDate: EventEmitter<string> = new EventEmitter();
 
+  constructor(@Inject(FormBuilder) fb: FormBuilder) {
+    this.fb = fb;
+  }
+
   /**
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.subscription = this.changeDateSubj
-      .asObservable()
-      .subscribe(changeDate => this.changeDate.emit(changeDate));
-  }
-
-  /**
-   * On date keyUp changes
-   */
-  public onKeyUp(): void {
-    this.isValid = this.serializedDate.valid;
+    this.courseForm = this.fb.group({
+      creationDate: [this.dateValue],
+    });
   }
 
   /**
    * On date input changes
    */
   public onDateChange(): void {
-    if (this.isValid) {
-      const date: string = this.serializedDate.value;
-      this.changeDateSubj.next(date);
-    }
+    const date: string = this.courseForm.get("creationDate").value;
+    this.changeDate.emit(date);
   }
 }
