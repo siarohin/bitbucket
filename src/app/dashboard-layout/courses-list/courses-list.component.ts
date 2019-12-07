@@ -119,7 +119,7 @@ export class CoursesListComponent implements OnInit {
    * On show course page
    */
   public onShowCourse(courseId: number): void {
-    this.router.navigate(["courses", `${courseId}`]);
+    this.router.navigate(["courses", courseId]);
   }
 
   /**

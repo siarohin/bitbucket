@@ -2,6 +2,9 @@ import { Component } from "@angular/core";
 import { Title, Meta } from "@angular/platform-browser";
 import { RouterOutlet } from "@angular/router";
 
+import { CoursesListService } from "../core/index";
+import isNil from "lodash/isNil";
+
 /**
  * Dashboard layout component
  */
@@ -13,10 +16,17 @@ import { RouterOutlet } from "@angular/router";
 export class DashboardLayoutComponent {
   private titleService: Title;
   private metaService: Meta;
+  private coursesListService: CoursesListService;
 
-  constructor(titleService: Title, metaService: Meta) {
+  /**
+   * course title
+   */
+  public courseTitle: string;
+
+  constructor(titleService: Title, metaService: Meta, coursesListService: CoursesListService) {
     this.titleService = titleService;
     this.metaService = metaService;
+    this.coursesListService = coursesListService;
   }
 
   /**
@@ -37,5 +47,8 @@ export class DashboardLayoutComponent {
   public onActivate(routerOutlet: RouterOutlet) {
     this.titleService.setTitle(routerOutlet.activatedRouteData.title);
     this.metaService.addTags(routerOutlet.activatedRouteData.meta);
+
+    const paramsId: string = routerOutlet.activatedRoute.snapshot.params.id;
+    this.courseTitle = paramsId ? this.coursesListService.getCourseItem(+paramsId).title : "";
   }
 }
