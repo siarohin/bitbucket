@@ -3,7 +3,6 @@ import { Title, Meta } from "@angular/platform-browser";
 import { RouterOutlet } from "@angular/router";
 
 import { CoursesListService } from "../core/index";
-import isNil from "lodash/isNil";
 
 /**
  * Dashboard layout component
