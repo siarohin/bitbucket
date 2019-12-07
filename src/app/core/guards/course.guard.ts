@@ -21,6 +21,10 @@ export class CourseGuard implements CanActivate {
   }
 
   private isValidCourseItem(courseId: number): boolean {
+    if (isNil(courseId)) {
+      return;
+    }
+
     const courseItem: CourseItemModel = this.courseListService.getCourseItem(Number(courseId));
 
     if (!isNil(courseItem)) {

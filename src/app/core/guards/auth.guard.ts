@@ -5,11 +5,20 @@ import { switchMap } from "rxjs/operators";
 
 import { AuthService } from "../services/index";
 
+/**
+ * Auth guard
+ */
 @Injectable({
   providedIn: "root",
 })
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService, private router: Router) {}
+  private authService: AuthService;
+  private router: Router;
+
+  constructor(authService: AuthService, router: Router) {
+    this.authService = authService;
+    this.router = router;
+  }
 
   /**
    * canActivate
@@ -17,12 +26,14 @@ export class AuthGuard implements CanActivate {
   public canActivate(): Observable<boolean | UrlTree> {
     return this.authService.getIsAuthenticated().pipe(
       switchMap(isAuthenticated => {
-        if (isAuthenticated) {
-          return observableOf(true);
+        let isActivate: boolean = true;
+
+        if (!isAuthenticated) {
+          isActivate = false;
+          this.router.navigate(["/login"]);
         }
 
-        this.router.navigate(["/login"]);
-        return observableOf(false);
+        return observableOf(isActivate);
       }),
     );
   }
