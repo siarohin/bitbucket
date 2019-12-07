@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { Subscription } from "rxjs";
 import { publishReplay, refCount, map } from "rxjs/operators";
@@ -46,6 +47,7 @@ export class CoursesListComponent implements OnInit {
   private coursesListService: CoursesListService;
   private orderBy: OrderByPipe;
   private inputValueBF: string;
+  private router: Router;
 
   /**
    * Modal dialog
@@ -80,10 +82,16 @@ export class CoursesListComponent implements OnInit {
     return this.inputValueBF;
   }
 
-  constructor(orderBy: OrderByPipe, coursesListService: CoursesListService, dialog: MatDialog) {
+  constructor(
+    orderBy: OrderByPipe,
+    coursesListService: CoursesListService,
+    dialog: MatDialog,
+    router: Router,
+  ) {
     this.orderBy = orderBy;
     this.coursesListService = coursesListService;
     this.dialog = dialog;
+    this.router = router;
   }
 
   /**
@@ -108,6 +116,13 @@ export class CoursesListComponent implements OnInit {
   }
 
   /**
+   * On show course page
+   */
+  public onShowCourse(courseId: number): void {
+    this.router.navigate(["courses", courseId]);
+  }
+
+  /**
    * On remove button click
    */
   public onRemoveCourse(courseId: number): void {
@@ -124,6 +139,15 @@ export class CoursesListComponent implements OnInit {
     const title = "New course";
     const data: CourseItemModel = { title };
     const params: DialogParamsModel = { action: DialogAction.Create, data };
+    this.openDialog(params);
+  }
+
+  /**
+   * On edit course button click
+   */
+  public onEditCourse(course: CourseItemModel): void {
+    const data: CourseItemModel = { ...course };
+    const params: DialogParamsModel = { action: DialogAction.Edit, data };
     this.openDialog(params);
   }
 
@@ -154,6 +178,8 @@ export class CoursesListComponent implements OnInit {
         const id: number = this.createCourseId();
         const courseItem: CourseItemModel = assign({}, data, { id });
         this.coursesListService.createCourseItem(courseItem);
+      } else if (action === DialogAction.Edit) {
+        this.coursesListService.updateCourseItem(data);
       }
     });
   }

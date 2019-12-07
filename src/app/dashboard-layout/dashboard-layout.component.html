@@ -1,13 +1,13 @@
-<div class="container" *ngIf="isAuthenticated; else login">
+<div class="container">
   <div class="breadcrumb">
-    <h2 class="title">Courses</h2>
+    <h2 class="title">Courses {{ courseTitle }}</h2>
   </div>
 
-  <app-search-form (searchButtonClick)="onSearchButtonClick($event)"></app-search-form>
+  <div class="search">
+    <router-outlet name="search"></router-outlet>
+  </div>
 
-  <app-courses-list [inputValue]="inputValue"></app-courses-list>
+  <div class="content">
+    <router-outlet #routerOutlet="outlet" (activate)="onActivate(routerOutlet)"></router-outlet>
+  </div>
 </div>
-
-<ng-template #login>
-  <app-login-page (submitForm)="onSubmitForm($event)"></app-login-page>
-</ng-template>

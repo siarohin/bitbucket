@@ -1,0 +1,16 @@
+<div class="list">
+  <div class="scrl-context">
+    <mat-card>
+      <mat-card-title>
+        <h1 class="main-title">
+          {{ course?.title | uppercase }}
+        </h1>
+        <span class="add-title">
+          <fa-icon [icon]="faClock"></fa-icon> {{ course?.duration | convertTime }}
+          <fa-icon [icon]="faCalendarAlt"></fa-icon> {{ course?.creationDate | date: "d MMM, y" }}
+        </span>
+      </mat-card-title>
+      <mat-card-content>{{ course?.description }}</mat-card-content>
+    </mat-card>
+  </div>
+</div>

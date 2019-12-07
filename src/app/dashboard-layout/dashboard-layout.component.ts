@@ -1,44 +1,38 @@
-import { Component, OnInit } from "@angular/core";
-import { Subscription } from "rxjs";
+import { Component } from "@angular/core";
+import { Title, Meta } from "@angular/platform-browser";
+import { RouterOutlet } from "@angular/router";
 
-import { AuthService, UserAuthModel } from "../core/index";
-import { AutoUnsubscribe } from "../shared/index";
+import { CoursesListService } from "../core/index";
+import isNil from "lodash/isNil";
 
 /**
  * Dashboard layout component
  */
-@AutoUnsubscribe()
 @Component({
   selector: "app-dashboard-layout",
   templateUrl: "./dashboard-layout.component.html",
   styleUrls: ["./dashboard-layout.component.scss"],
 })
-export class DashboardLayoutComponent implements OnInit {
-  private authService: AuthService;
-  private subscription: Subscription;
+export class DashboardLayoutComponent {
+  private titleService: Title;
+  private metaService: Meta;
+  private coursesListService: CoursesListService;
 
   /**
-   * isAuthenticated user
+   * course title
    */
-  public isAuthenticated: boolean;
+  public courseTitle: string;
+
+  constructor(titleService: Title, metaService: Meta, coursesListService: CoursesListService) {
+    this.titleService = titleService;
+    this.metaService = metaService;
+    this.coursesListService = coursesListService;
+  }
 
   /**
    * User's input value
    */
   public inputValue: string;
-
-  constructor(authService: AuthService) {
-    this.authService = authService;
-  }
-
-  /**
-   * ngOnInit
-   */
-  public ngOnInit(): void {
-    this.subscription = this.authService.getIsAuthenticated().subscribe(isAuthenticated => {
-      this.isAuthenticated = isAuthenticated;
-    });
-  }
 
   /**
    * User's input on search button click
@@ -48,9 +42,13 @@ export class DashboardLayoutComponent implements OnInit {
   }
 
   /**
-   * Update user's info
+   * Set meta information for the page
    */
-  public onSubmitForm(user: UserAuthModel): void {
-    this.authService.logIn(user);
+  public onActivate(routerOutlet: RouterOutlet) {
+    this.titleService.setTitle(routerOutlet.activatedRouteData.title);
+    this.metaService.addTags(routerOutlet.activatedRouteData.meta);
+
+    const paramsId: string = routerOutlet.activatedRoute.snapshot.params.id;
+    this.courseTitle = paramsId ? this.coursesListService.getCourseItem(+paramsId).title : "";
   }
 }

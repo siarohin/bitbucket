@@ -1,7 +1,8 @@
-import { Component, Output, EventEmitter, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { Router } from "@angular/router";
 import { NgForm } from "@angular/forms";
 
-import { UserAuthModel } from "../../core/index";
+import { UserAuthModel, AuthService } from "../../core/index";
 
 /**
  * Simple component that represents login page
@@ -13,12 +14,13 @@ import { UserAuthModel } from "../../core/index";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginPageComponent {
-  /**
-   * Event emitter for submitForm
-   * param {{ UserAuthModel }}
-   */
-  @Output()
-  public submitForm: EventEmitter<UserAuthModel> = new EventEmitter();
+  private authService: AuthService;
+  private router: Router;
+
+  constructor(authService: AuthService, router: Router) {
+    this.authService = authService;
+    this.router = router;
+  }
 
   /**
    * On submit form click
@@ -26,7 +28,8 @@ export class LoginPageComponent {
    */
   public onSubmit(form: NgForm) {
     if (form.valid) {
-      this.submitForm.emit(form.value as UserAuthModel);
+      this.authService.logIn(form.value as UserAuthModel);
+      this.router.navigate(["/courses"]);
     }
   }
 }

@@ -8,6 +8,9 @@ import { DashboardLayoutComponent } from "./dashboard-layout.component";
 import { SearchFormComponent } from "./search-form/index";
 import { LoginPageComponent } from "./login-page/index";
 import { CoursesListModule } from "./courses-list/index";
+import { CoursePageComponent } from "./course-page/index";
+import { PathNotFoundComponent } from "./path-not-found/index";
+import { DashboardLayoutRoutingModule } from "./dashboard-layout-routing.module";
 
 @NgModule({
   declarations: [
@@ -17,8 +20,10 @@ import { CoursesListModule } from "./courses-list/index";
     UserEntityComponent,
     SearchFormComponent,
     LoginPageComponent,
+    PathNotFoundComponent,
+    CoursePageComponent,
   ],
-  imports: [CommonModule, SharedModule, CoursesListModule],
+  imports: [CommonModule, SharedModule, CoursesListModule, DashboardLayoutRoutingModule],
   exports: [DashboardLayoutComponent, FooterComponent, HeaderComponent],
 })
 export class DashboardLayoutModule {}

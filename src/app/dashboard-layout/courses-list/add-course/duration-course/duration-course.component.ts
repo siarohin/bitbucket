@@ -1,6 +1,5 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Output } from "@angular/core";
-import { FormControl } from "@angular/forms";
-import isNaN from "lodash/isNaN";
+import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input, Inject } from "@angular/core";
+import { FormBuilder, FormGroup } from "@angular/forms";
 
 /**
  * Simple component that represents course's duration creation
@@ -12,15 +11,18 @@ import isNaN from "lodash/isNaN";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DurationCourseComponent {
-  /**
-   * Is valid duration input value
-   */
-  public isValid = false;
+  private fb: FormBuilder;
 
   /**
-   * Course's duration
+   * Form group
    */
-  public duration: FormControl = new FormControl("");
+  public courseForm: FormGroup;
+
+  /**
+   * Course's duration on existing course
+   */
+  @Input()
+  public durationValue: number;
 
   /**
    * Event emitter for course's duration changes
@@ -28,20 +30,31 @@ export class DurationCourseComponent {
   @Output()
   public changeDuration: EventEmitter<number> = new EventEmitter();
 
+  constructor(@Inject(FormBuilder) fb: FormBuilder) {
+    this.fb = fb;
+  }
+
   /**
-   * On duration keyUp changes
+   * ngOnInit
    */
-  public onKeyUp(): void {
-    this.isValid = this.duration.valid && !isNaN(Number(this.duration.value));
+  public ngOnInit(): void {
+    this.courseForm = this.fb.group({
+      duration: [this.durationValue],
+    });
   }
 
   /**
    * On duration input changes
    */
   public onDurationChange(): void {
-    if (this.isValid) {
-      const duration: number = Number(this.duration.value);
-      this.changeDuration.emit(duration);
-    }
+    const value: string = this.getDuration();
+    this.changeDuration.emit(Number(value));
+  }
+
+  /**
+   * Get duration value
+   */
+  public getDuration(): string {
+    return this.courseForm.get("duration").value;
   }
 }

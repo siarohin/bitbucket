@@ -6,13 +6,9 @@
   [ngClass]="{ last: isLast }"
 >
   <mat-card-title>
-    <h3 class="main-title">
+    <h3 class="main-title" (click)="onCourseItemClick()">
       {{ course?.title | uppercase }}
-      <fa-icon
-        *ngIf="course?.isTopRated"
-        class="top-star"
-        [icon]="faStar"
-      ></fa-icon>
+      <fa-icon *ngIf="course?.isTopRated" class="top-star" [icon]="faStar"></fa-icon>
     </h3>
     <span class="add-title">
       <fa-icon [icon]="faClock"></fa-icon>
@@ -22,9 +18,7 @@
       {{ course?.creationDate | date: "d MMM, y" }}
     </span>
   </mat-card-title>
-  <mat-card-content>{{
-    course?.description | truncate: 220
-  }}</mat-card-content>
+  <mat-card-content>{{ course?.description | truncate: 220 }}</mat-card-content>
 
   <div class="buttons">
     <button (click)="onEditBtnClick()" mat-flat-button>

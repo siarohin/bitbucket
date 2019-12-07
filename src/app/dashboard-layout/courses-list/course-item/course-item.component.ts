@@ -55,10 +55,23 @@ export class CourseItemComponent {
   public deleteButtonClick: EventEmitter<number> = new EventEmitter();
 
   /**
+   * Event emitter for course item click
+   */
+  @Output()
+  public courseItemClick: EventEmitter<number> = new EventEmitter();
+
+  /**
+   * Event emitter for edit button click
+   */
+  @Output()
+  public editButtonClick: EventEmitter<CourseItemModel> = new EventEmitter();
+
+  /**
    * On edit button click
    */
   public onEditBtnClick(): void {
-    console.log("Button 'Edit' was clicked");
+    const course: CourseItemModel = this.course;
+    this.editButtonClick.emit(course);
   }
 
   /**
@@ -67,5 +80,13 @@ export class CourseItemComponent {
   public onDeleteBtnClick(): void {
     const { id } = this.course;
     this.deleteButtonClick.emit(id);
+  }
+
+  /**
+   * On course item click
+   */
+  public onCourseItemClick(): void {
+    const { id } = this.course;
+    this.courseItemClick.emit(id);
   }
 }

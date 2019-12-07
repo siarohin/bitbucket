@@ -48,6 +48,21 @@ $mat-dialog-container-padding: 2.4rem;
 
     .text-area {
       height: 9.6rem;
+      line-height: 1.5;
+
+      &::-webkit-scrollbar {
+        width: 0.3rem;
+      }
+      &::-webkit-scrollbar-track {
+        background: var(--silver);
+      }
+      &::-webkit-scrollbar-thumb {
+        background: var(--steel);
+      }
+
+      &::-webkit-scrollbar-button {
+        display: none;
+      }
     }
   }
 }
