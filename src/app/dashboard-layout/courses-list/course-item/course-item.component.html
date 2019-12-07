@@ -1,24 +1,26 @@
 <mat-card
   appHighlight
-  [highlight-creation-date]="course?.creationDate"
+  [highlight-creation-date]="course?.date"
   [highlight-top-rated]="course?.isTopRated"
   [highlight-schemas]="schemas"
   [ngClass]="{ last: isLast }"
 >
   <mat-card-title>
     <h3 class="main-title" (click)="onCourseItemClick()">
-      {{ course?.title | uppercase }}
+      {{ course?.name | uppercase }}
       <fa-icon *ngIf="course?.isTopRated" class="top-star" [icon]="faStar"></fa-icon>
     </h3>
     <span class="add-title">
       <fa-icon [icon]="faClock"></fa-icon>
-      {{ course?.duration | convertTime }}
+      {{ course?.length | convertTime }}
 
       <fa-icon [icon]="faCalendarAlt"></fa-icon>
-      {{ course?.creationDate | date: "d MMM, y" }}
+      {{ course?.date | date: "d MMM, y" }}
     </span>
   </mat-card-title>
-  <mat-card-content>{{ course?.description | truncate: 220 }}</mat-card-content>
+  <mat-card-content
+    innerHTML="{{ course?.description | truncate: 220 | highlightSearch: formValue }}"
+  ></mat-card-content>
 
   <div class="buttons">
     <button (click)="onEditBtnClick()" mat-flat-button>

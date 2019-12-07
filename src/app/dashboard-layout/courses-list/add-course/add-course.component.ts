@@ -2,7 +2,7 @@ import { Component, Inject, ChangeDetectionStrategy, OnInit } from "@angular/cor
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
-import { DialogParamsModel, Dictionary } from "../../../core/index";
+import { DialogParamsModel, Dictionary, AuthorsModel } from "../../../core/index";
 
 /**
  * Simple component that represents dialog on add course
@@ -45,13 +45,13 @@ export class AddCourseComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    const { creationDate, description, duration, title, id } = this.params.data;
+    const { date, description, length, name, id, authors } = this.params.data;
     this.courseForm = this.fb.group({
-      title: [title, Validators.required],
+      name: [name, Validators.required],
       description: [description, Validators.required],
-      duration: [duration, [Validators.minLength(1), Validators.pattern("[0-9]*"), Validators.required]],
-      creationDate: [creationDate, Validators.required],
-      authors: [],
+      length: [length, [Validators.minLength(1), Validators.pattern("[0-9]*"), Validators.required]],
+      date: [date, Validators.required],
+      authors: [authors],
       id: [id],
     });
   }
@@ -75,8 +75,8 @@ export class AddCourseComponent implements OnInit {
    * On change duration value
    * param {{ number }}
    */
-  public onChangeDuration(duration: number) {
-    this.courseForm.patchValue({ duration });
+  public onChangeDuration(length: number) {
+    this.courseForm.patchValue({ length });
     this.courseForm.updateValueAndValidity();
   }
 
@@ -84,9 +84,9 @@ export class AddCourseComponent implements OnInit {
    * On change date value
    * param {{ string }}
    */
-  public onChangeDate(date: string) {
-    const creationDate: Date = new Date(date);
-    this.courseForm.patchValue({ creationDate });
+  public onChangeDate(value: string) {
+    const date: Date = new Date(value);
+    this.courseForm.patchValue({ date });
     this.courseForm.updateValueAndValidity();
   }
 
@@ -103,13 +103,20 @@ export class AddCourseComponent implements OnInit {
    * Get duration value
    */
   public getDuration(): number {
-    return this.courseForm.get("duration").value;
+    return this.courseForm.get("length").value;
   }
 
   /**
    * Get serialized date value
    */
   public getDate(): string {
-    return this.courseForm.get("creationDate").value;
+    return this.courseForm.get("date").value;
+  }
+
+  /**
+   * Get authors
+   */
+  public getAuthors(): Array<AuthorsModel> {
+    return this.courseForm.get("authors").value;
   }
 }

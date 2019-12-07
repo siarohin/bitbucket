@@ -2,6 +2,10 @@
   display: inline-grid;
   width: 100%;
 
+  app-search-form {
+    height: 11.4rem;
+  }
+
   .list {
     padding: 0 1rem;
     margin: 1rem -1rem;
@@ -81,5 +85,45 @@
     justify-content: center;
     align-content: center;
     align-items: center;
+  }
+
+  .loading {
+    .lds-facebook {
+      display: inline-block;
+      position: relative;
+      width: 8rem;
+      height: 8rem;
+    }
+    .lds-facebook div {
+      display: inline-block;
+      position: absolute;
+      left: 0.8rem;
+      width: 1rem;
+      background: var(--dark);
+      animation: lds-facebook 1.2s cubic-bezier(0, 0.5, 0.5, 1) infinite;
+    }
+    .lds-facebook div:nth-child(1) {
+      left: 0.8rem;
+      animation-delay: -0.24s;
+    }
+    .lds-facebook div:nth-child(2) {
+      left: 3.2rem;
+      animation-delay: -0.12s;
+    }
+    .lds-facebook div:nth-child(3) {
+      left: 5.6rem;
+      animation-delay: 0;
+    }
+    @keyframes lds-facebook {
+      0% {
+        top: 0.8rem;
+        height: 6.4rem;
+      }
+      50%,
+      100% {
+        top: 2.4rem;
+        height: 3.2rem;
+      }
+    }
   }
 }

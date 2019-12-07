@@ -9,6 +9,7 @@ import {
   CourseAuthorsComponent,
   AddCourseComponent,
 } from "./add-course/index";
+import { SearchFormComponent } from "./search-form/index";
 import { DeleteCourseComponent } from "./delete-course/index";
 import { CourseItemComponent } from "./course-item/index";
 
@@ -21,6 +22,7 @@ import { CourseItemComponent } from "./course-item/index";
     CreationCourseDateComponent,
     DurationCourseComponent,
     CourseAuthorsComponent,
+    SearchFormComponent,
   ],
   imports: [CommonModule, SharedModule],
   entryComponents: [AddCourseComponent, DeleteCourseComponent],

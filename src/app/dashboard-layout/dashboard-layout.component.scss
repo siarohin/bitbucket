@@ -5,15 +5,9 @@ $padding-layout: 0 8.5rem;
   display: grid;
   grid-template-areas:
     "breadcrumb"
-    "search-form"
     "content";
-  grid-template-rows: 6.4rem 11.4rem auto;
+  grid-template-rows: 6.4rem auto;
   background: var(--pale-grey);
-
-  .search {
-    grid-area: search-form;
-    padding: $padding-layout;
-  }
 
   .content {
     grid-area: content;

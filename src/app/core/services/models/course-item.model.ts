@@ -1,11 +1,13 @@
+import { AuthorsModel } from "./authors.model";
+
 /**
  * CourseItem interface
  */
 export interface CourseItemModel {
   /**
-   * title of course
+   * name of course
    */
-  title: string;
+  name: string;
 
   /**
    * id of course item
@@ -15,12 +17,12 @@ export interface CourseItemModel {
   /**
    * creation date
    */
-  creationDate?: Date | number;
+  date?: Date | number;
 
   /**
    * course's duration in minutes
    */
-  duration?: number;
+  length?: number;
 
   /**
    * description for course item
@@ -31,4 +33,9 @@ export interface CourseItemModel {
    * top rated field
    */
   isTopRated?: boolean;
+
+  /**
+   * autors field
+   */
+  authors?: Array<AuthorsModel>;
 }

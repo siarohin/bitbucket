@@ -1,8 +1,8 @@
-$negative-margin-list: -7.4rem;
+$margin-list: 7rem;
 
 .list {
   padding: 0 1rem;
-  margin: $negative-margin-list -1rem 1rem;
+  margin: $margin-list -1rem 1rem;
   box-sizing: border-box;
   overflow-y: auto;
 

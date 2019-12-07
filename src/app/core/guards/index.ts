@@ -1,2 +1,2 @@
 export * from "./auth.guard";
-export * from "./course.guard";
+export * from "./course-resolve.guard";

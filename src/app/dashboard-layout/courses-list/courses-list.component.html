@@ -1,38 +1,57 @@
 <div class="courses-list">
+  <app-search-form (search)="onSearchCourses($event)"></app-search-form>
+
   <button (click)="onAddCourse()" mat-flat-button class="add-course-btn">
     <fa-icon [icon]="faPlus"></fa-icon>
     Add course
   </button>
 
-  <ng-container *ngIf="coursesList?.length; else emptyContainer">
+  <ng-container *ngIf="coursesList$ | async as coursesList; else loading">
     <div class="list">
-      <div class="scrl-context">
+      <div class="scrl-context" *ngIf="!!coursesList.length; else emptyList">
         <app-course-item
           *ngFor="let item of coursesList; last as isLast"
           [course]="item"
           [isLast]="isLast"
+          [formValue]="formValue"
           (deleteButtonClick)="onRemoveCourse($event)"
           (editButtonClick)="onEditCourse($event)"
           (courseItemClick)="onShowCourse($event)"
         ></app-course-item>
       </div>
     </div>
-    <mat-card>
+    <mat-card *ngIf="!!coursesList.length">
       <mat-card-content>
-        <button (click)="onLoadBtnClick()" mat-button>
+        <button *ngIf="!hideLoadButton; else warning" (click)="onLoad()" mat-button>
           Load more
         </button>
       </mat-card-content>
     </mat-card>
   </ng-container>
-
-  <ng-template #emptyContainer>
-    <div class="list">
-      <mat-card class="empty-container">
-        <mat-card-content>
-          {{ "No data, feel free to add new course" | uppercase }}
-        </mat-card-content>
-      </mat-card>
-    </div>
-  </ng-template>
 </div>
+
+<ng-template #warning>
+  {{ "All courses were loaded" }}
+</ng-template>
+
+<ng-template #emptyList>
+  <mat-card class="empty-container">
+    <mat-card-content>
+      {{ "No data, feel free to add new course" | uppercase }}
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+
+<ng-template #loading>
+  <div class="list">
+    <mat-card class="empty-container loading">
+      <mat-card-content>
+        <div class="lds-facebook">
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</ng-template>

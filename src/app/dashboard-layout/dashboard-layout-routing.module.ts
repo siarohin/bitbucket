@@ -6,8 +6,8 @@ import { PathNotFoundComponent } from "./path-not-found/index";
 import { LoginPageComponent } from "./login-page/index";
 import { CoursePageComponent } from "./course-page/index";
 import { CoursesListComponent } from "./courses-list/index";
-import { AuthGuard, CourseGuard } from "../core/index";
-import { SearchFormComponent } from "./search-form/index";
+import { AuthGuard, CourseResolveGuard } from "../core/index";
+import { SearchFormComponent } from "./courses-list/search-form/index";
 
 const routes: Routes = [
   {
@@ -24,15 +24,12 @@ const routes: Routes = [
             data: { title: "Courses list" },
           },
           {
-            path: "",
-            pathMatch: "full",
-            component: SearchFormComponent,
-            outlet: "search",
-          },
-          {
             path: ":id",
-            canActivate: [CourseGuard], // check existing id
             component: CoursePageComponent,
+            canActivate: [AuthGuard],
+            resolve: {
+              course: CourseResolveGuard,
+            },
             data: { title: "Course page" },
           },
         ],

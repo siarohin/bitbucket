@@ -1,4 +1,12 @@
-import { Component, ChangeDetectionStrategy, EventEmitter, Output, Input, Inject } from "@angular/core";
+import {
+  Component,
+  ChangeDetectionStrategy,
+  EventEmitter,
+  Output,
+  Input,
+  Inject,
+  OnInit,
+} from "@angular/core";
 import { FormBuilder, FormGroup } from "@angular/forms";
 
 /**
@@ -10,7 +18,7 @@ import { FormBuilder, FormGroup } from "@angular/forms";
   styleUrls: ["./duration-course.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DurationCourseComponent {
+export class DurationCourseComponent implements OnInit {
   private fb: FormBuilder;
 
   /**
@@ -39,7 +47,7 @@ export class DurationCourseComponent {
    */
   public ngOnInit(): void {
     this.courseForm = this.fb.group({
-      duration: [this.durationValue],
+      length: [this.durationValue],
     });
   }
 
@@ -55,6 +63,6 @@ export class DurationCourseComponent {
    * Get duration value
    */
   public getDuration(): string {
-    return this.courseForm.get("duration").value;
+    return this.courseForm.get("length").value;
   }
 }

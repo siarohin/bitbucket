@@ -2,7 +2,7 @@ import { Component, ChangeDetectionStrategy } from "@angular/core";
 import { Router } from "@angular/router";
 import { NgForm } from "@angular/forms";
 
-import { UserAuthModel, AuthService } from "../../core/index";
+import { AuthService } from "../../core/index";
 
 /**
  * Simple component that represents login page
@@ -20,6 +20,7 @@ export class LoginPageComponent {
   constructor(authService: AuthService, router: Router) {
     this.authService = authService;
     this.router = router;
+    this.authService.logout();
   }
 
   /**
@@ -28,8 +29,9 @@ export class LoginPageComponent {
    */
   public onSubmit(form: NgForm) {
     if (form.valid) {
-      this.authService.logIn(form.value as UserAuthModel);
-      this.router.navigate(["/courses"]);
+      this.authService.authenticate(form.value.login as string, form.value.password as string).then(() => {
+        this.router.navigate(["/courses"]);
+      });
     }
   }
 }

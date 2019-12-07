@@ -19,7 +19,7 @@ const DAYS_NUMBER = 14;
 export class HighlightDirective {
   private elementRef: ElementRef;
   private renderer: Renderer2;
-  private creationDateBF: Date | number;
+  private dateBF: Date | number;
   private topRatedBF: boolean;
 
   /**
@@ -33,8 +33,8 @@ export class HighlightDirective {
    * Props {{ Date | number }}
    */
   @Input("highlight-creation-date")
-  public set creationDate(date: Date | number) {
-    this.creationDateBF = date;
+  public set date(date: Date | number) {
+    this.dateBF = date;
     this.highlight();
   }
 
@@ -42,8 +42,8 @@ export class HighlightDirective {
    * Get creation date
    * Return {{ Date | number }}
    */
-  public get creationDate(): Date | number {
-    return this.creationDateBF;
+  public get date(): Date | number {
+    return this.dateBF;
   }
 
   /**
@@ -71,7 +71,7 @@ export class HighlightDirective {
 
   private highlight(): void {
     const element: HTMLElement = this.elementRef.nativeElement;
-    const schema: HighlightSchemas = this.getCourseSchema(this.creationDate);
+    const schema: HighlightSchemas = this.getCourseSchema(this.date);
 
     keys(schema).forEach((key: string) => {
       if (key && schema[key]) {
@@ -80,9 +80,9 @@ export class HighlightDirective {
     });
   }
 
-  private getCourseSchema(date: Date | number): HighlightSchemas {
-    if (!isNil(this.creationDate) && !isNil(this.topRated)) {
-      const courseDateInMs: number = date instanceof Date ? date.valueOf() : date;
+  private getCourseSchema(value: Date | number): HighlightSchemas {
+    if (!isNil(this.date) && !isNil(this.topRated)) {
+      const courseDateInMs: number = value instanceof Date ? value.valueOf() : value;
       const freshDaysInMs: number = DAYS_NUMBER * 24 * 60 * 60 * 1000;
       const currentDayInMs: number = Date.now();
       const differenceInMs: number = currentDayInMs - freshDaysInMs;

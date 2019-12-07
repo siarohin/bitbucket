@@ -49,6 +49,12 @@ export class CourseItemComponent {
   public isLast: boolean;
 
   /**
+   * Highlight value
+   */
+  @Input()
+  public formValue: boolean;
+
+  /**
    * Event emitter for delete button click
    */
   @Output()

@@ -1,84 +1,131 @@
-import { Injectable } from "@angular/core";
+import { Injectable, Inject } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
 import { Observable, BehaviorSubject } from "rxjs";
-import { publishReplay, refCount } from "rxjs/operators";
-import assign from "lodash/assign";
+import { publishReplay, refCount, map } from "rxjs/operators";
+import isNil from "lodash/isNil";
+import isEmpty from "lodash/isEmpty";
 
 import { StorageService } from "./storage.service";
-import { UserAuthModel } from "./models/index";
+import { UserAuthModel, NameModel } from "./models/index";
+import { ServicesModule } from "./services.module";
+import { UsersAPI } from "./auth.config";
 
 /**
- * Authentication service
+ * Constant for token name
  */
-@Injectable()
+const TOKEN = "fakeToken";
+
+/**
+ * Authentication promise service
+ */
+@Injectable({
+  providedIn: ServicesModule,
+})
 export class AuthService {
+  private http: HttpClient;
+  private usersUrl: string;
   private storageService: StorageService;
   private userSubj: BehaviorSubject<UserAuthModel> = new BehaviorSubject(undefined);
-  private user$: Observable<UserAuthModel>;
-  private isAuthenticatedSubj: BehaviorSubject<boolean> = new BehaviorSubject(undefined);
-  private isAuthenticated$: Observable<boolean>;
 
-  constructor(storageService: StorageService) {
-    this.isAuthenticated$ = this.isAuthenticatedSubj.asObservable().pipe(publishReplay(1), refCount());
-    this.user$ = this.userSubj.asObservable().pipe(publishReplay(1), refCount());
+  /**
+   * Observable<NameModel>
+   */
+  public user$: Observable<NameModel>;
+
+  constructor(storageService: StorageService, http: HttpClient, @Inject(UsersAPI) usersUrl: string) {
+    this.http = http;
+    this.usersUrl = usersUrl;
     this.storageService = storageService;
-    this.updateInitialState();
+    this.user$ = this.userSubj.asObservable().pipe(
+      map(user => (isNil(user) ? user : user.name)),
+      publishReplay(1),
+      refCount(),
+    );
   }
 
   /**
-   * Login user
+   * Get user
    */
-  public logIn(user: UserAuthModel): void {
-    this.updateUser(user);
-    this.updateIsAuthenticated(true);
-    this.storageService.setItem("user", user.email);
+  public getUser(token: string = this.getTokenFromStorage()): Promise<UserAuthModel> {
+    return this.http
+      .get<Array<UserAuthModel>>(this.usersUrl, {
+        params: { [TOKEN]: token },
+      })
+      .toPromise()
+      .then(user => {
+        this.userSubj.next(user[0]);
+        return user[0];
+      });
+  }
+
+  /**
+   * Authenticate user
+   */
+  public authenticate(login: string, password: string): Promise<UserAuthModel | void> {
+    return this.http
+      .get<Partial<Array<UserAuthModel>>>(this.usersUrl, {
+        params: {
+          login,
+          password,
+        },
+      })
+      .toPromise()
+      .then(user => {
+        if (!isEmpty(user)) {
+          const token: string = user[0].fakeToken;
+          this.setTokenToStorage(token);
+          return this.getUser(token);
+        }
+      });
   }
 
   /**
    * Logout user
    */
-  public logOut(): void {
-    this.updateUser(undefined);
-    this.updateIsAuthenticated(false);
-    this.storageService.removeItem(["user"]);
+  public logout(): void {
+    this.deleteTokenFromStorage();
+    this.userSubj.next(undefined);
   }
 
   /**
-   * IsAuthenticated user
-   * returns Observable<boolean>
+   * Return isAuthenticated
+   * return {{ boolean }}
    */
-  public getIsAuthenticated(): Observable<boolean> {
-    return this.isAuthenticated$;
+  public isAuthenticated(): boolean {
+    const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
+
+    if (isAuthenticatedToken) {
+      this.getUser();
+    }
+
+    return isAuthenticatedToken;
   }
 
   /**
-   * user info
-   * returns Observable<UserAuthModel>
+   * Return token
    */
-  public getUserInfo(): Observable<UserAuthModel> {
-    return this.user$;
+  public getToken(): string {
+    return this.getTokenFromStorage();
   }
 
   /**
-   * Update user info
+   * Get fakeToken from storage
    */
-  private updateUser(user: UserAuthModel): void {
-    this.userSubj.next(user);
+  private getTokenFromStorage(): string {
+    return this.storageService.getItem(TOKEN);
   }
 
   /**
-   * Update is authenticated user
+   * Set fakeToken to storage
    */
-  private updateIsAuthenticated(isAuthenticated: boolean): void {
-    this.isAuthenticatedSubj.next(isAuthenticated);
+  private setTokenToStorage(fakeToken: string): void {
+    this.storageService.setItem(TOKEN, fakeToken);
   }
 
   /**
-   * Update initial state from local storage
+   * delete fakeToken from storage
    */
-  private updateInitialState(): void {
-    const email: string = this.storageService.getItem("user");
-    const user: UserAuthModel = assign({}, { email });
-    this.updateUser(user);
-    this.updateIsAuthenticated(!!email);
+  private deleteTokenFromStorage(): void {
+    this.storageService.removeItem([TOKEN]);
   }
 }
