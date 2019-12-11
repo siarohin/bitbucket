@@ -7,6 +7,6 @@ export interface UserAuthModel {
   login: string;
   password?: string;
   id?: number;
-  fakeToken?: string;
+  token?: string;
   name?: NameModel;
 }

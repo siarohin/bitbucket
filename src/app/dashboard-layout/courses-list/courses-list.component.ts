@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { Observable, Subscription } from "rxjs";
@@ -15,6 +15,7 @@ import {
   DialogAction,
   Dictionary,
 } from "../../core/index";
+import { SpinnerService } from "src/app/widgets/index";
 import { DeleteCourseComponent } from "./delete-course/index";
 import { AddCourseComponent } from "./add-course/index";
 
@@ -46,6 +47,8 @@ export class CoursesListComponent implements OnInit {
   private orderBy: OrderByPipe;
   private router: Router;
   private subscription: Subscription;
+  private spinner: SpinnerService;
+  private hideLoadButtonBF: boolean;
 
   /**
    * Searching value from form
@@ -55,7 +58,14 @@ export class CoursesListComponent implements OnInit {
   /**
    * Hide load course button
    */
-  public hideLoadButton: boolean;
+  @Input()
+  public set hideLoadButton(value: boolean) {
+    this.hideLoadButtonBF = value;
+    this.spinner.hide();
+  }
+  public get hideLoadButton(): boolean {
+    return this.hideLoadButtonBF;
+  }
 
   /**
    * Modal dialog
@@ -77,11 +87,13 @@ export class CoursesListComponent implements OnInit {
     coursesListService: CoursesListService,
     dialog: MatDialog,
     router: Router,
+    spinner: SpinnerService,
   ) {
     this.orderBy = orderBy;
     this.coursesListService = coursesListService;
     this.dialog = dialog;
     this.router = router;
+    this.spinner = spinner;
   }
 
   /**
@@ -98,6 +110,7 @@ export class CoursesListComponent implements OnInit {
    * On load button click
    */
   public onLoad(): void {
+    this.spinner.show();
     this.coursesListService.loadMoreCourses();
   }
 
@@ -158,7 +171,6 @@ export class CoursesListComponent implements OnInit {
   private searchCourse(value: string, isFormReq: boolean): void {
     this.coursesList$ = this.coursesListService.searchCourses(value).pipe(
       map(coursesList => this.orderByCoursesList(coursesList, isFormReq)),
-      tap(console.log),
       publishReplay(1),
       refCount(),
     );

@@ -1,12 +1,11 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of as observableOf, BehaviorSubject } from "rxjs";
-import { catchError, retry, concatMap, switchMap, map, delay } from "rxjs/operators";
-import isNaN from "lodash/isNaN";
+import { catchError, retry, concatMap, switchMap, delay, scan, tap } from "rxjs/operators";
 
-import { CourseItemModel, Dictionary } from "./models/index";
-import { CoursesAPI } from "./courses-list.config";
 import { ServicesModule } from "./services.module";
+import { CourseItemModel, CoursesPerPageModel } from "./models/index";
+import { CoursesAPI } from "./courses-list.config";
 import { DELAY_TIME, RETRY_REQ, COURSES_PER_PAGE } from "../constants";
 
 /**
@@ -18,10 +17,9 @@ import { DELAY_TIME, RETRY_REQ, COURSES_PER_PAGE } from "../constants";
 export class CoursesListService {
   private http: HttpClient;
   private coursesUrl: string;
-  private coursesPerPage: number = COURSES_PER_PAGE;
-  private coursesLength: number;
+  private coursesPerPage: CoursesPerPageModel = COURSES_PER_PAGE;
   private shouldPreventProcess = false;
-  private coursesPerPageSubj: BehaviorSubject<number> = new BehaviorSubject(COURSES_PER_PAGE);
+  private coursesPerPageSubj: BehaviorSubject<CoursesPerPageModel> = new BehaviorSubject(COURSES_PER_PAGE);
   private hideLoadButtonSubj: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   /**
@@ -45,20 +43,17 @@ export class CoursesListService {
     return this.coursesPerPageSubj.asObservable().pipe(
       delay(DELAY_TIME),
       switchMap(coursesPerPage => {
-        const queryParams: Dictionary<string> = isLimited ? { _limit: `${coursesPerPage}` } : undefined;
+        const queryParams: any = isLimited
+          ? { start: `${coursesPerPage.start}`, count: `${coursesPerPage.count}` }
+          : undefined;
         return this.http
           .get<Array<CourseItemModel>>(this.coursesUrl, {
             params: queryParams,
-            observe: "response",
           })
           .pipe(
-            map(res => {
-              const coursesLength: string = res.headers.get("X-Total-Count");
-              this.coursesLength = !isNaN(Number(coursesLength)) ? Number(coursesLength) : 0;
-              this.shouldPreventProcess = this.coursesPerPage >= this.coursesLength;
+            tap(coursesList => {
+              this.shouldPreventProcess = coursesList.length !== this.coursesPerPage.count;
               this.hideLoadButtonSubj.next(this.shouldPreventProcess);
-
-              return res.body;
             }),
             retry(RETRY_REQ),
             catchError(() => observableOf([])),
@@ -110,7 +105,7 @@ export class CoursesListService {
     const options = {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
-    return this.http.put<CourseItemModel>(url, body, options).pipe(
+    return this.http.patch<CourseItemModel>(url, body, options).pipe(
       delay(DELAY_TIME),
       concatMap(() => this.getCoursesList()),
       catchError(() => observableOf(undefined)),
@@ -138,7 +133,7 @@ export class CoursesListService {
       return;
     }
 
-    this.coursesPerPage = this.coursesPerPage + COURSES_PER_PAGE;
+    this.coursesPerPage = { start: this.coursesPerPage.start, count: 2 * this.coursesPerPage.count };
     this.coursesPerPageSubj.next(this.coursesPerPage);
   }
 
@@ -148,7 +143,7 @@ export class CoursesListService {
   public searchCourses(value: string): Observable<Array<CourseItemModel>> {
     return this.http
       .get<Array<CourseItemModel>>(this.coursesUrl, {
-        params: { q: value },
+        params: { textFragment: value },
       })
       .pipe(
         delay(DELAY_TIME),

@@ -1,6 +1,8 @@
 import { InjectionToken } from "@angular/core";
 
-const usersBaseUrl = "http://localhost:3000/users";
+import { API_HOST } from "../constants";
+
+const usersBaseUrl = `${API_HOST}/auth`;
 
 export const UsersAPI = new InjectionToken<string>("UsersAPI");
 

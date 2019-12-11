@@ -6,3 +6,5 @@ export * from "./dialog-action.model";
 export * from "./dictionary.model";
 export * from "./authors.model";
 export * from "./name.model";
+export * from "./token-request.model";
+export * from "./courses-per-page.model";

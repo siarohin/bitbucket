@@ -1,6 +1,11 @@
 import { COMMA, ENTER } from "@angular/cdk/keycodes";
 
-import { AuthorsModel } from "./services/models/index";
+import { AuthorsModel, CoursesPerPageModel } from "./services/models/index";
+
+/**
+ * Public API
+ */
+export const API_HOST = "http://localhost:3004";
 
 /**
  * Fake delay time for emitting delay
@@ -13,9 +18,9 @@ export const DELAY_TIME = 1000;
 export const RETRY_REQ = 3;
 
 /**
- * Count of courses
+ * Constant for initial CoursesPerPage instance
  */
-export const COURSES_PER_PAGE = 5;
+export const COURSES_PER_PAGE: CoursesPerPageModel = { start: 0, count: 5 };
 
 /**
  * Array with keyCodes

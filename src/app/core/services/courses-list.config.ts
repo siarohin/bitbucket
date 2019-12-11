@@ -1,6 +1,8 @@
 import { InjectionToken } from "@angular/core";
 
-const coursesBaseUrl = "http://localhost:3000/courses";
+import { API_HOST } from "../constants";
+
+const coursesBaseUrl = `${API_HOST}/courses`;
 
 export const CoursesAPI = new InjectionToken<string>("CoursesAPI");
 
