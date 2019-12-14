@@ -1,0 +1,9 @@
+<div class="search-form">
+  <div class="custom-input">
+    <fa-icon [icon]="faSearch"></fa-icon>
+    <input (keyup.enter)="onSearch(input.value)" type="text" placeholder="Text to search" #input />
+  </div>
+  <button (click)="onSearch(input.value)" mat-flat-button>
+    Search
+  </button>
+</div>

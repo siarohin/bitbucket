@@ -1,66 +1,154 @@
-import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { publishReplay, refCount } from "rxjs/operators";
+import { Injectable, Inject } from "@angular/core";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, of as observableOf, BehaviorSubject } from "rxjs";
+import { catchError, retry, concatMap, switchMap, delay, scan, tap } from "rxjs/operators";
 
-import { CourseItemModel } from "./models/index";
-import { DEFAULT_CONFIG } from "./courses.config";
+import { ServicesModule } from "./services.module";
+import { CourseItemModel, CoursesPerPageModel } from "./models/index";
+import { CoursesAPI } from "./courses-list.config";
+import { DELAY_TIME, RETRY_REQ, COURSES_PER_PAGE } from "../constants";
 
 /**
  * Courses list service
  */
-@Injectable()
+@Injectable({
+  providedIn: ServicesModule,
+})
 export class CoursesListService {
-  private coursesList: Array<CourseItemModel> = DEFAULT_CONFIG;
-  private coursesListSubj: BehaviorSubject<Array<CourseItemModel>> = new BehaviorSubject(this.coursesList);
-  private coursesList$: Observable<Array<CourseItemModel>>;
+  private http: HttpClient;
+  private coursesUrl: string;
+  private coursesPerPage: CoursesPerPageModel = COURSES_PER_PAGE;
+  private shouldPreventProcess = false;
+  private coursesPerPageSubj: BehaviorSubject<CoursesPerPageModel> = new BehaviorSubject(COURSES_PER_PAGE);
+  private hideLoadButtonSubj: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
-  constructor() {
-    this.coursesList$ = this.coursesListSubj.asObservable().pipe(publishReplay(1), refCount());
+  /**
+   * Hide load course button
+   * Observable<boolean>
+   */
+  public hideLoadButton$: Observable<boolean>;
+
+  constructor(http: HttpClient, @Inject(CoursesAPI) coursesUrl: string) {
+    this.http = http;
+    this.coursesUrl = coursesUrl;
+    this.hideLoadButton$ = this.hideLoadButtonSubj.asObservable();
   }
 
   /**
    * Get courses list
+   * param {{ boolean }} set queryParams
    * return {{ Observable<Array<CourseItemModel>> }}
    */
-  public getCoursesList(): Observable<Array<CourseItemModel>> {
-    return this.coursesList$;
+  public getCoursesList(isLimited: boolean = true): Observable<Array<CourseItemModel>> {
+    return this.coursesPerPageSubj.asObservable().pipe(
+      delay(DELAY_TIME),
+      switchMap(coursesPerPage => {
+        const queryParams: any = isLimited
+          ? { start: `${coursesPerPage.start}`, count: `${coursesPerPage.count}` }
+          : undefined;
+        return this.http
+          .get<Array<CourseItemModel>>(this.coursesUrl, {
+            params: queryParams,
+          })
+          .pipe(
+            tap(coursesList => {
+              this.shouldPreventProcess = coursesList.length !== this.coursesPerPage.count;
+              this.hideLoadButtonSubj.next(this.shouldPreventProcess);
+            }),
+            retry(RETRY_REQ),
+            catchError(() => observableOf([])),
+          );
+      }),
+    );
   }
 
   /**
    * Create course item
    * param {{ CourseItemModel }}
+   * return Observable<Array<CourseItemModel>
    */
-  public createCourseItem(couseItem: CourseItemModel): void {
-    this.coursesList = [...this.coursesList, couseItem];
-    this.coursesListSubj.next(this.coursesList);
+  public createCourseItem(courseItem: CourseItemModel): Observable<Array<CourseItemModel>> {
+    const url = this.coursesUrl;
+    const body = JSON.stringify(courseItem);
+    const options = {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    };
+
+    return this.http.post<CourseItemModel>(url, body, options).pipe(
+      delay(DELAY_TIME),
+      concatMap(() => this.getCoursesList()),
+      catchError(() => observableOf(undefined)),
+    );
   }
 
   /**
    * Get course item by id
    * param {{ number }}
-   * return {{ CourseItemModel }}
+   * return {{ Observable<CourseItemModel> }}
    */
-  public getCourseItem(id: number): CourseItemModel {
-    const courseItem: CourseItemModel = this.coursesList.find(item => item.id === id);
-    return courseItem;
+  public getCourseItem(id: number): Observable<CourseItemModel> {
+    const url = `${this.coursesUrl}/${id}`;
+    return this.http.get<CourseItemModel>(url).pipe(
+      retry(RETRY_REQ),
+      catchError(() => observableOf(undefined)),
+    );
   }
 
   /**
    * Update course item
    * param {{ CourseItemModel }}
+   * return {{ Observable<Array<CourseItemModel> }}
    */
-  public updateCourseItem(couseItem: CourseItemModel): void {
-    const indexToUpdate: number = this.coursesList.findIndex(item => item.id === couseItem.id);
-    this.coursesList[indexToUpdate] = couseItem;
-    this.coursesListSubj.next(this.coursesList);
+  public updateCourseItem(courseItem: CourseItemModel): Observable<Array<CourseItemModel>> {
+    const url = `${this.coursesUrl}/${courseItem.id}`;
+    const body: string = JSON.stringify(courseItem);
+    const options = {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    };
+    return this.http.patch<CourseItemModel>(url, body, options).pipe(
+      delay(DELAY_TIME),
+      concatMap(() => this.getCoursesList()),
+      catchError(() => observableOf(undefined)),
+    );
   }
 
   /**
    * Remove course item
    * param {{ number }}
+   * return {{ Observable<Array<CourseItemModel>> }}
    */
-  public removeCourseItem(id: number): void {
-    this.coursesList = this.coursesList.filter(course => course.id !== id);
-    this.coursesListSubj.next(this.coursesList);
+  public removeCourseItem(courseItem: CourseItemModel): Observable<Array<CourseItemModel>> {
+    const url = `${this.coursesUrl}/${courseItem.id}`;
+    return this.http.delete(url).pipe(
+      delay(DELAY_TIME),
+      concatMap(() => this.getCoursesList()),
+    );
+  }
+
+  /**
+   * Load more courses
+   */
+  public loadMoreCourses(): void {
+    if (this.shouldPreventProcess) {
+      return;
+    }
+
+    this.coursesPerPage = { start: this.coursesPerPage.start, count: 2 * this.coursesPerPage.count };
+    this.coursesPerPageSubj.next(this.coursesPerPage);
+  }
+
+  /**
+   * Search courses
+   */
+  public searchCourses(value: string): Observable<Array<CourseItemModel>> {
+    return this.http
+      .get<Array<CourseItemModel>>(this.coursesUrl, {
+        params: { textFragment: value },
+      })
+      .pipe(
+        delay(DELAY_TIME),
+        retry(RETRY_REQ),
+        catchError(() => observableOf([])),
+      );
   }
 }

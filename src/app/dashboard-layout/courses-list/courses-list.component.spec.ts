@@ -12,16 +12,16 @@ import { OrderByPipe, SharedModule } from "../../shared/index";
 const coursesListMock: Array<CourseItemModel> = [
   {
     id: 1,
-    title: "Book Club",
-    creationDate: new Date(2019, 10, 29, 14, 0, 0, 0),
-    duration: 20,
+    name: "Book Club",
+    date: new Date(2019, 10, 29, 14, 0, 0, 0),
+    length: 20,
     description: "Have you been wanting to join a book club.",
   },
   {
     id: 2,
-    title: "Alphabet",
-    creationDate: new Date(2020, 10, 29, 14, 0, 0, 0),
-    duration: 40,
+    name: "Alphabet",
+    date: new Date(2020, 10, 29, 14, 0, 0, 0),
+    length: 40,
     description: "Have you been wanting to join a book club.",
   },
 ];

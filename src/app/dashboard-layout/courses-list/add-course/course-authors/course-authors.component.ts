@@ -1,39 +1,42 @@
-import { Component, ChangeDetectionStrategy, OnInit, Output, EventEmitter } from "@angular/core";
-import { COMMA, ENTER } from "@angular/cdk/keycodes";
+import { Component, ChangeDetectionStrategy, OnInit, Output, EventEmitter, Input } from "@angular/core";
 import { MatChipInputEvent } from "@angular/material/chips";
-import { Subscription, BehaviorSubject } from "rxjs";
+import isEmpty from "lodash/isEmpty";
 
-import { AutoUnsubscribe } from "../../../../shared/index";
-import { Dictionary } from "../../../../core/index";
-
-/**
- * Array with default authors
- */
-const AUTHORS: Array<Dictionary<string>> = [{ name: "John Doe" }, { name: "Yohan Smitz" }];
-
-/**
- * Array with keyCodes
- */
-const KEY_KODES: Array<number> = [ENTER, COMMA];
+import { KEY_KODES, AuthorsModel, DEFAULT_AUTHOR } from "../../../../core/index";
 
 /**
  * Simple component that represents course's authors creation
  */
-@AutoUnsubscribe()
 @Component({
   selector: "app-course-authors",
   templateUrl: "./course-authors.component.html",
   styleUrls: ["./course-authors.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CourseAuthorsComponent implements OnInit {
-  private courseAuthorsSubj: BehaviorSubject<Array<Dictionary<string>>> = new BehaviorSubject(AUTHORS);
-  private subscription: Subscription;
+export class CourseAuthorsComponent {
+  private authorsBF: Array<AuthorsModel>;
 
   /**
-   * List of authors
+   * Set authors
+   * parram {{ Array<AuthorsModel> }}
    */
-  public authorsList: Array<Dictionary<string>> = AUTHORS;
+  @Input()
+  public set authors(value: Array<AuthorsModel>) {
+    if (isEmpty(value)) {
+      this.authorsBF = [DEFAULT_AUTHOR];
+      return;
+    }
+
+    this.authorsBF = value;
+  }
+
+  /**
+   * Get authors
+   * return {{ Array<AuthorsModel> }}
+   */
+  public get authors(): Array<AuthorsModel> {
+    return this.authorsBF;
+  }
 
   /**
    * Whether or not this chip list is selectable
@@ -59,28 +62,24 @@ export class CourseAuthorsComponent implements OnInit {
    * Event emitter for authors changes
    */
   @Output()
-  public changeAuthors: EventEmitter<Array<Dictionary<string>>> = new EventEmitter();
-
-  /**
-   * ngOnInit
-   */
-  public ngOnInit(): void {
-    this.subscription = this.courseAuthorsSubj
-      .asObservable()
-      .subscribe(authors => this.changeAuthors.emit(authors));
-  }
+  public changeAuthors: EventEmitter<Array<AuthorsModel>> = new EventEmitter();
 
   /**
    * Add author to list
    * param {{ MatChipInputEvent }}
    */
   public add(event: MatChipInputEvent): void {
-    const input = event.input;
-    const value = event.value || "";
+    const input: HTMLInputElement = event.input;
+    const value: string = event.value || "";
 
     // Add author
     if (value.trim()) {
-      const authors: Array<Dictionary<string>> = [...this.authorsList, { name: value.trim() }];
+      const author: Array<string> = value.split(" ");
+      const [name, lastName] = author;
+      const authors: Array<AuthorsModel> = [
+        ...this.authors,
+        { id: undefined, name: name ? name.trim() : "", lastName: lastName ? lastName.trim() : "" },
+      ];
       this.updateAuthors(authors);
     }
 
@@ -94,13 +93,13 @@ export class CourseAuthorsComponent implements OnInit {
    * Remove author from list
    * param {{ Dictionary<string> }}
    */
-  public remove(author: Dictionary<string>): void {
-    const authors = this.authorsList.filter(param => author.name !== param.name);
+  public remove(author: AuthorsModel): void {
+    const authors = this.authors.filter(param => author.name !== param.name);
     this.updateAuthors(authors);
   }
 
-  private updateAuthors(authors: Array<Dictionary<string>>): void {
-    this.authorsList = [...authors];
-    this.courseAuthorsSubj.next(authors);
+  private updateAuthors(authors: Array<AuthorsModel>): void {
+    this.authors = [...authors];
+    this.changeAuthors.emit(authors);
   }
 }

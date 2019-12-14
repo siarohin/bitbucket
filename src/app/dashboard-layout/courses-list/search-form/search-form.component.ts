@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Output, ChangeDetectionStrategy } from "@angular/core";
-import isEmpty from "lodash/isEmpty";
 
-import { FA_ICONS, IconDefinition } from "../../shared/index";
+import { FA_ICONS, IconDefinition } from "../../../shared/index";
 
 /**
  * Font Awesome icons from shared module
@@ -24,15 +23,15 @@ export class SearchFormComponent {
   public faSearch: IconDefinition = faSearch;
 
   /**
-   * Event emitter for search button click
+   * Emit search value
    */
   @Output()
-  public searchButtonClick: EventEmitter<string> = new EventEmitter();
+  public search: EventEmitter<string> = new EventEmitter();
 
   /**
    * On search button click
    */
-  public onBtnClick(value: string): void {
-    this.searchButtonClick.emit(value);
+  public onSearch(value: string): void {
+    this.search.emit(value);
   }
 }

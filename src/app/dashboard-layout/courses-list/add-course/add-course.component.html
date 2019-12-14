@@ -1,10 +1,10 @@
 <mat-card>
   <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">
-    <mat-card-title>{{ params.data.title }}</mat-card-title>
+    <mat-card-title>{{ params.data.name }}</mat-card-title>
     <mat-card-content>
       <mat-form-field appearance="outline">
-        <mat-label>Title</mat-label>
-        <input matInput formControlName="title" />
+        <mat-label>Name</mat-label>
+        <input matInput formControlName="name" />
       </mat-form-field>
 
       <mat-form-field appearance="outline">
@@ -21,7 +21,10 @@
           [dateValue]="getDate()"
           (changeDate)="onChangeDate($event)"
         ></app-creation-course-date>
-        <app-course-authors (changeAuthors)="onChangeAuthors($event)"></app-course-authors>
+        <app-course-authors
+          [authors]="getAuthors()"
+          (changeAuthors)="onChangeAuthors($event)"
+        ></app-course-authors>
       </div>
     </mat-card-content>
 

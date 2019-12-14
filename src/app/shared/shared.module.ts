@@ -24,7 +24,7 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 
-import { ConvertTimePipe, TruncatePipe, OrderByPipe } from "./pipes/index";
+import { ConvertTimePipe, TruncatePipe, OrderByPipe, HighlightSearch } from "./pipes/index";
 import { HighlightDirective } from "./directives/index";
 import { Dictionary } from "../core/index";
 
@@ -44,7 +44,7 @@ export const FA_ICONS: Dictionary<IconDefinition> = {
 };
 
 @NgModule({
-  declarations: [ConvertTimePipe, TruncatePipe, OrderByPipe, HighlightDirective],
+  declarations: [ConvertTimePipe, TruncatePipe, HighlightSearch, OrderByPipe, HighlightDirective],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -79,6 +79,7 @@ export const FA_ICONS: Dictionary<IconDefinition> = {
     FontAwesomeModule,
     ConvertTimePipe,
     TruncatePipe,
+    HighlightSearch,
     OrderByPipe,
     HighlightDirective,
   ],

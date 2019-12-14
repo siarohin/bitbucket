@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
-import { AuthService } from "./auth.service";
-import { CoursesListService } from "./courses-list.service";
 import { StorageService } from "./storage.service";
+import { CoursesAPIProvider } from "./courses-list.config";
+import { UsersAPIProvider } from "./auth.config";
 
 @NgModule({
-  providers: [AuthService, CoursesListService, StorageService],
+  providers: [CoursesAPIProvider, UsersAPIProvider, StorageService],
   imports: [CommonModule],
 })
 export class ServicesModule {}

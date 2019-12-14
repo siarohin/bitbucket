@@ -2,7 +2,7 @@ import { Component } from "@angular/core";
 import { Title, Meta } from "@angular/platform-browser";
 import { RouterOutlet } from "@angular/router";
 
-import { CoursesListService } from "../core/index";
+import { SpinnerService } from "../widgets/index";
 
 /**
  * Dashboard layout component
@@ -15,29 +15,16 @@ import { CoursesListService } from "../core/index";
 export class DashboardLayoutComponent {
   private titleService: Title;
   private metaService: Meta;
-  private coursesListService: CoursesListService;
 
   /**
-   * course title
+   * public spinner service
    */
-  public courseTitle: string;
+  public spinnerService: SpinnerService;
 
-  constructor(titleService: Title, metaService: Meta, coursesListService: CoursesListService) {
+  constructor(titleService: Title, metaService: Meta, spinnerService: SpinnerService) {
     this.titleService = titleService;
     this.metaService = metaService;
-    this.coursesListService = coursesListService;
-  }
-
-  /**
-   * User's input value
-   */
-  public inputValue: string;
-
-  /**
-   * User's input on search button click
-   */
-  public onSearchButtonClick(value: string): void {
-    this.inputValue = value;
+    this.spinnerService = spinnerService;
   }
 
   /**
@@ -46,8 +33,5 @@ export class DashboardLayoutComponent {
   public onActivate(routerOutlet: RouterOutlet) {
     this.titleService.setTitle(routerOutlet.activatedRouteData.title);
     this.metaService.addTags(routerOutlet.activatedRouteData.meta);
-
-    const paramsId: string = routerOutlet.activatedRoute.snapshot.params.id;
-    this.courseTitle = paramsId ? this.coursesListService.getCourseItem(+paramsId).title : "";
   }
 }

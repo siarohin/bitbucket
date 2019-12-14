@@ -1,12 +1,11 @@
-import { Component, Input, OnInit } from "@angular/core";
+import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
-import { Subscription } from "rxjs";
-import { publishReplay, refCount, map } from "rxjs/operators";
-import isEmpty from "lodash/isEmpty";
+import { Observable, Subscription } from "rxjs";
+import { publishReplay, refCount, map, switchMap, tap } from "rxjs/operators";
 import isNil from "lodash/isNil";
-import last from "lodash/last";
 import assign from "lodash/assign";
+import last from "lodash/last";
 
 import { FA_ICONS, IconDefinition, OrderByPipe, AutoUnsubscribe } from "../../shared/index";
 import {
@@ -16,6 +15,7 @@ import {
   DialogAction,
   Dictionary,
 } from "../../core/index";
+import { SpinnerService } from "src/app/widgets/index";
 import { DeleteCourseComponent } from "./delete-course/index";
 import { AddCourseComponent } from "./add-course/index";
 
@@ -28,8 +28,8 @@ const { faPlus } = FA_ICONS;
  * Default sort keys for sortBy directive
  */
 export const SORT_PARAMETER: Dictionary<keyof CourseItemModel> = {
-  valid: "title",
-  invalid: "creationDate",
+  valid: "name",
+  invalid: "date",
 };
 
 /**
@@ -43,11 +43,29 @@ export const SORT_PARAMETER: Dictionary<keyof CourseItemModel> = {
   providers: [OrderByPipe],
 })
 export class CoursesListComponent implements OnInit {
-  private subscription: Subscription;
   private coursesListService: CoursesListService;
   private orderBy: OrderByPipe;
-  private inputValueBF: string;
   private router: Router;
+  private subscription: Subscription;
+  private spinner: SpinnerService;
+  private hideLoadButtonBF: boolean;
+
+  /**
+   * Searching value from form
+   */
+  public formValue: string;
+
+  /**
+   * Hide load course button
+   */
+  @Input()
+  public set hideLoadButton(value: boolean) {
+    this.hideLoadButtonBF = value;
+    this.spinner.hide();
+  }
+  public get hideLoadButton(): boolean {
+    return this.hideLoadButtonBF;
+  }
 
   /**
    * Modal dialog
@@ -57,62 +75,43 @@ export class CoursesListComponent implements OnInit {
   /**
    * Array from course items
    */
-  public coursesList: Array<CourseItemModel>;
+  public coursesList$: Observable<Array<CourseItemModel>>;
 
   /**
    * Fontawesome icons
    */
   public faPlus: IconDefinition = faPlus;
 
-  /**
-   * Set user's input value
-   * Param {{ string }}
-   */
-  @Input()
-  public set inputValue(value: string) {
-    this.inputValueBF = value;
-    this.coursesList = this.orderByCoursesList();
-  }
-
-  /**
-   * Get user's input value
-   * Return {{ string }}
-   */
-  public get inputValue(): string {
-    return this.inputValueBF;
-  }
-
   constructor(
     orderBy: OrderByPipe,
     coursesListService: CoursesListService,
     dialog: MatDialog,
     router: Router,
+    spinner: SpinnerService,
   ) {
     this.orderBy = orderBy;
     this.coursesListService = coursesListService;
     this.dialog = dialog;
     this.router = router;
+    this.spinner = spinner;
   }
 
   /**
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.subscription = this.coursesListService
-      .getCoursesList()
-      .pipe(
-        map(coursesList => this.orderByCoursesList(coursesList)),
-        publishReplay(1),
-        refCount(),
-      )
-      .subscribe(coursesList => (this.coursesList = coursesList));
+    this.getCoursesList();
+    this.subscription = this.coursesListService.hideLoadButton$.subscribe(
+      hideLoadButton => (this.hideLoadButton = hideLoadButton),
+    );
   }
 
   /**
    * On load button click
    */
-  public onLoadBtnClick(): void {
-    console.log("Button 'Load' was clicked");
+  public onLoad(): void {
+    this.spinner.show();
+    this.coursesListService.loadMoreCourses();
   }
 
   /**
@@ -126,8 +125,8 @@ export class CoursesListComponent implements OnInit {
    * On remove button click
    */
   public onRemoveCourse(courseId: number): void {
-    const title = "Do you really want to delete this course?";
-    const data: CourseItemModel = { id: courseId, title };
+    const name = "Do you really want to delete this course?";
+    const data: CourseItemModel = { id: courseId, name };
     const params: DialogParamsModel = { action: DialogAction.Remove, data };
     this.openDialog(params);
   }
@@ -136,8 +135,8 @@ export class CoursesListComponent implements OnInit {
    * On add course button click
    */
   public onAddCourse(): void {
-    const title = "New course";
-    const data: CourseItemModel = { title };
+    const name = "New course";
+    const data: CourseItemModel = { name };
     const params: DialogParamsModel = { action: DialogAction.Create, data };
     this.openDialog(params);
   }
@@ -151,8 +150,37 @@ export class CoursesListComponent implements OnInit {
     this.openDialog(params);
   }
 
-  private orderByCoursesList(coursesList: Array<CourseItemModel> = this.coursesList): Array<CourseItemModel> {
-    const parameter: keyof CourseItemModel = !isEmpty(this.inputValue)
+  /**
+   * Search courses
+   */
+  public onSearchCourses(value: string): void {
+    this.formValue = value;
+    const isFormReq = true;
+    this.hideLoadButton = true;
+    !!value.length ? this.searchCourse(value, isFormReq) : this.getCoursesList();
+  }
+
+  private getCoursesList(): void {
+    this.coursesList$ = this.coursesListService.getCoursesList().pipe(
+      map(coursesList => this.orderByCoursesList(coursesList)),
+      publishReplay(1),
+      refCount(),
+    );
+  }
+
+  private searchCourse(value: string, isFormReq: boolean): void {
+    this.coursesList$ = this.coursesListService.searchCourses(value).pipe(
+      map(coursesList => this.orderByCoursesList(coursesList, isFormReq)),
+      publishReplay(1),
+      refCount(),
+    );
+  }
+
+  private orderByCoursesList(
+    coursesList: Array<CourseItemModel>,
+    isFormReq: boolean = false,
+  ): Array<CourseItemModel> {
+    const parameter: keyof CourseItemModel = !isNil(isFormReq)
       ? SORT_PARAMETER.valid
       : SORT_PARAMETER.invalid;
     return this.orderBy.transform(coursesList, parameter);
@@ -172,20 +200,55 @@ export class CoursesListComponent implements OnInit {
 
       const { action, data } = param;
 
-      if (action === DialogAction.Remove) {
-        this.coursesListService.removeCourseItem(data.id);
-      } else if (action === DialogAction.Create) {
-        const id: number = this.createCourseId();
-        const courseItem: CourseItemModel = assign({}, data, { id });
-        this.coursesListService.createCourseItem(courseItem);
-      } else if (action === DialogAction.Edit) {
-        this.coursesListService.updateCourseItem(data);
+      switch (action) {
+        case DialogAction.Remove:
+          this.removeCourseItem({ ...data });
+          break;
+
+        case DialogAction.Create:
+          this.createCourseItem({ ...data });
+          break;
+
+        case DialogAction.Edit:
+          this.updateCourseItem({ ...data });
+          break;
+
+        default:
+          break;
       }
     });
   }
 
-  private createCourseId(): number {
-    const lastCourse: CourseItemModel = last(this.orderBy.transform(this.coursesList, "id"));
-    return lastCourse.id + 1;
+  private removeCourseItem(courseItem: CourseItemModel): void {
+    this.coursesList$ = this.coursesListService.removeCourseItem(courseItem).pipe(
+      map(coursesList => this.orderByCoursesList(coursesList)),
+      publishReplay(1),
+      refCount(),
+    );
+  }
+
+  private updateCourseItem(courseItem: CourseItemModel): void {
+    this.coursesList$ = this.coursesListService.updateCourseItem(courseItem).pipe(
+      map(coursesList => this.orderByCoursesList(coursesList)),
+      publishReplay(1),
+      refCount(),
+    );
+  }
+
+  private createCourseItem(courseItem: CourseItemModel): void {
+    // skip limit for checking all courses
+    const coursesLimit = false;
+
+    this.coursesList$ = this.coursesListService.getCoursesList(coursesLimit).pipe(
+      switchMap(coursesList => {
+        const coursesById: Array<CourseItemModel> = this.orderBy.transform(coursesList, "id");
+        const id: number = !isNil(last(coursesById)) ? last(coursesById).id + 1 : 1;
+        const course: CourseItemModel = assign({}, courseItem, { id });
+        return this.coursesListService.createCourseItem(course);
+      }),
+      map(coursesList => this.orderByCoursesList(coursesList)),
+      publishReplay(1),
+      refCount(),
+    );
   }
 }

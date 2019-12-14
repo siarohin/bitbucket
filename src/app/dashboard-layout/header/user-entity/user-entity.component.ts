@@ -1,7 +1,7 @@
 import { Component, ChangeDetectionStrategy, Output, EventEmitter, Input } from "@angular/core";
 
 import { FA_ICONS, IconDefinition } from "../../../shared/index";
-import { UserAuthModel } from "../../../core/index";
+import { NameModel } from "../../../core/index";
 
 /**
  * Font Awesome icons from shared module
@@ -28,18 +28,18 @@ export class UserEntityComponent {
    * userEntity info
    */
   @Input()
-  public user: UserAuthModel;
+  public user: NameModel;
 
   /**
-   * Event emitter for logoff button click
+   * Event emitter for logout button click
    */
   @Output()
-  public logoffButtonClick: EventEmitter<number> = new EventEmitter();
+  public logout: EventEmitter<number> = new EventEmitter();
 
   /**
-   * On logoff button click
+   * On logout button click
    */
-  public onLogoffButtonClick() {
-    this.logoffButtonClick.emit();
+  public onLogout() {
+    this.logout.emit();
   }
 }

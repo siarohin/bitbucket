@@ -31,7 +31,7 @@ describe("SharedModule.HighlightDirective:", () => {
   it("should set planned property to classList", () => {
     // November, 29
     const testData: Dictionary<Date | number> = {
-      creationDate: new Date(2019, 10, 29, 14, 0, 0, 0),
+      date: new Date(2019, 10, 29, 14, 0, 0, 0),
     };
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
@@ -43,7 +43,7 @@ describe("SharedModule.HighlightDirective:", () => {
   it("should set fresh property to classList", () => {
     // November, 1
     const testData: Dictionary<Date | number> = {
-      creationDate: new Date(2019, 10, 1, 14, 0, 0, 0),
+      date: new Date(2019, 10, 1, 14, 0, 0, 0),
     };
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
@@ -54,7 +54,7 @@ describe("SharedModule.HighlightDirective:", () => {
 
   it("should not set property to classList", () => {
     // prettier-ignore
-    const testData: Dictionary<Date | number> = {creationDate: undefined};
+    const testData: Dictionary<Date | number> = {date: undefined};
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
 
@@ -67,7 +67,7 @@ describe("SharedModule.HighlightDirective:", () => {
   it("should set top rated property to classList", () => {
     const testData: Dictionary<Date | number | boolean> = {
       isTopRated: true,
-      creationDate: new Date(2019, 10, 1, 14, 0, 0, 0),
+      date: new Date(2019, 10, 1, 14, 0, 0, 0),
     };
     testComponent.course = assign({}, testComponent.course, testData);
     fixture.detectChanges();
@@ -81,7 +81,7 @@ describe("SharedModule.HighlightDirective:", () => {
   template: `
     <div
       appHighlight
-      [highlight-creation-date]="course?.creationDate"
+      [highlight-creation-date]="course?.date"
       [highlight-top-rated]="course?.isTopRated"
       [highlight-schemas]="schemas"
     ></div>
@@ -90,9 +90,9 @@ describe("SharedModule.HighlightDirective:", () => {
 class TestComponent {
   public course: CourseItemModel = {
     id: 1,
-    title: "Book Club",
-    creationDate: undefined,
-    duration: 20,
+    name: "Book Club",
+    date: undefined,
+    length: 20,
     description: "Have you been wanting to join a book club.",
     isTopRated: undefined,
   };

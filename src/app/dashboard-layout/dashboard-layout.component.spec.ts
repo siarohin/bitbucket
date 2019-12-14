@@ -12,9 +12,9 @@ describe("DashboardLayoutComponent:", () => {
   const courseListMock: Array<CourseItemModel> = [
     {
       id: 1,
-      title: "Book Club",
-      creationDate: new Date(2019, 10, 29, 14, 0, 0, 0),
-      duration: 20,
+      name: "Book Club",
+      date: new Date(2019, 10, 29, 14, 0, 0, 0),
+      length: 20,
       description: "Have you been wanting to join a book club",
     },
   ];

@@ -1,11 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
-import { Subscription } from "rxjs";
+import { Observable } from "rxjs";
 
-import { AuthService, UserAuthModel } from "../../core/index";
-import { AutoUnsubscribe } from "../../shared/index";
+import { AuthService, NameModel } from "../../core/index";
 
-@AutoUnsubscribe()
 @Component({
   selector: "app-header",
   templateUrl: "./header.component.html",
@@ -13,18 +11,13 @@ import { AutoUnsubscribe } from "../../shared/index";
 })
 export class HeaderComponent implements OnInit {
   private authService: AuthService;
-  private subscription: Subscription;
   private router: Router;
 
   /**
-   * isAuthenticated user
-   */
-  public isAuthenticated: boolean;
-
-  /**
    * user's info
+   * Observable<UserAuthModel>
    */
-  public user: UserAuthModel;
+  public user$: Observable<NameModel>;
 
   constructor(authService: AuthService, router: Router) {
     this.authService = authService;
@@ -35,21 +28,14 @@ export class HeaderComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.subscription = this.authService.getIsAuthenticated().subscribe(isAuthenticated => {
-      this.isAuthenticated = isAuthenticated;
-    });
-    this.subscription.add(
-      this.authService.getUserInfo().subscribe(user => {
-        this.user = user;
-      }),
-    );
+    this.user$ = this.authService.user$;
   }
 
   /**
-   * On logoff button click
+   * On logout button click
    */
-  public onLogoffButtonClick(): void {
-    this.authService.logOut();
+  public onLogout(): void {
+    this.authService.logout();
     this.router.navigate(["/login"]);
   }
 }

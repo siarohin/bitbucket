@@ -2,12 +2,12 @@
   <mat-label>Authors</mat-label>
   <mat-chip-list #chipList aria-label="Author selection">
     <mat-chip
-      *ngFor="let author of authorsList"
+      *ngFor="let author of authors"
       [selectable]="isSelectable"
       [removable]="isRemovable"
       (removed)="remove(author)"
     >
-      {{ author.name }}
+      {{ author?.name }} {{ author?.lastName }}
       <mat-icon matChipRemove *ngIf="isRemovable">cancel</mat-icon>
     </mat-chip>
 

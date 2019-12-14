@@ -47,7 +47,7 @@ export class CreationCourseDateComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.courseForm = this.fb.group({
-      creationDate: [this.dateValue],
+      date: [this.dateValue],
     });
   }
 
@@ -55,7 +55,7 @@ export class CreationCourseDateComponent implements OnInit {
    * On date input changes
    */
   public onDateChange(): void {
-    const date: string = this.courseForm.get("creationDate").value;
+    const date: string = this.courseForm.get("date").value;
     this.changeDate.emit(date);
   }
 }
