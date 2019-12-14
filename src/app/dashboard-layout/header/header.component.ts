@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { publishReplay, refCount } from "rxjs/operators";
 
 import { AuthService, NameModel } from "../../core/index";
 
@@ -28,7 +29,7 @@ export class HeaderComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.user$ = this.authService.user$;
+    this.user$ = this.authService.user$.pipe(publishReplay(1), refCount());
   }
 
   /**

@@ -1,6 +1,6 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
-import { Observable, BehaviorSubject, throwError } from "rxjs";
+import { Observable, BehaviorSubject, throwError, of as observableOf } from "rxjs";
 import { publishReplay, refCount, map } from "rxjs/operators";
 import isNil from "lodash/isNil";
 
@@ -8,6 +8,7 @@ import { StorageService } from "./storage.service";
 import { UserAuthModel, NameModel, TokenRequestModel } from "./models/index";
 import { ServicesModule } from "./services.module";
 import { UsersAPI } from "./auth.config";
+import { SpinnerService } from "../../widgets/index";
 
 /**
  * Constant for token name
@@ -33,27 +34,91 @@ export class AuthService {
   private usersUrl: string;
   private storageService: StorageService;
   private userSubj: BehaviorSubject<UserAuthModel> = new BehaviorSubject(undefined);
+  private spinner: SpinnerService;
 
   /**
    * Observable<NameModel>
    */
   public user$: Observable<NameModel>;
 
-  constructor(storageService: StorageService, http: HttpClient, @Inject(UsersAPI) usersUrl: string) {
+  constructor(
+    storageService: StorageService,
+    http: HttpClient,
+    @Inject(UsersAPI) usersUrl: string,
+    spinner: SpinnerService,
+  ) {
     this.http = http;
     this.usersUrl = usersUrl;
     this.storageService = storageService;
     this.user$ = this.userSubj.asObservable().pipe(
-      map(user => (isNil(user) ? user : user.name)),
+      map(user => (isNil(user) ? undefined : user.name)),
       publishReplay(1),
       refCount(),
     );
+    this.spinner = spinner;
   }
 
   /**
-   * Get user
+   * Authenticate user
    */
-  public getUser(token: string = this.getTokenFromStorage()): Promise<UserAuthModel | Observable<never>> {
+  public authenticate(login: string, password: string): Promise<UserAuthModel | Observable<never>> {
+    this.spinner.show();
+
+    const url = `${this.usersUrl}/${AuthApi.login}`;
+    const body: string = JSON.stringify({
+      login,
+      password,
+    });
+    const options = {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    };
+
+    return this.http
+      .post<Partial<UserAuthModel>>(url, body, options)
+      .toPromise()
+      .then((response: TokenRequestModel) => {
+        const { token } = response;
+        this.setTokenToStorage(token);
+        this.spinner.hide();
+        return this.getUser(token);
+      })
+      .catch(err => {
+        this.handleError(err);
+        this.spinner.hide();
+        return throwError("Please try again later");
+      });
+  }
+
+  /**
+   * Logout user
+   */
+  public logout(): void {
+    this.deleteTokenFromStorage();
+    this.userSubj.next(undefined);
+  }
+
+  /**
+   * Return isAuthenticated
+   * return {{ boolean }}
+   */
+  public isAuthenticated(): Observable<boolean> {
+    const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
+
+    if (isAuthenticatedToken) {
+      this.getUser();
+    }
+
+    return observableOf(isAuthenticatedToken);
+  }
+
+  /**
+   * Return token
+   */
+  public getToken(): string {
+    return this.getTokenFromStorage();
+  }
+
+  private getUser(token: string = this.getTokenFromStorage()): Promise<UserAuthModel | Observable<never>> {
     const url = `${this.usersUrl}/${AuthApi.user}`;
     const body: string = JSON.stringify({
       token,
@@ -73,62 +138,6 @@ export class AuthService {
         this.handleError(err);
         return throwError("Please try again later");
       });
-  }
-
-  /**
-   * Authenticate user
-   */
-  public authenticate(login: string, password: string): Promise<UserAuthModel | Observable<never>> {
-    const url = `${this.usersUrl}/${AuthApi.login}`;
-    const body: string = JSON.stringify({
-      login,
-      password,
-    });
-    const options = {
-      headers: new HttpHeaders({ "Content-Type": "application/json" }),
-    };
-
-    return this.http
-      .post<Partial<UserAuthModel>>(url, body, options)
-      .toPromise()
-      .then((response: TokenRequestModel) => {
-        const { token } = response;
-        this.setTokenToStorage(token);
-        return this.getUser(token);
-      })
-      .catch(err => {
-        this.handleError(err);
-        return throwError("Please try again later");
-      });
-  }
-
-  /**
-   * Logout user
-   */
-  public logout(): void {
-    this.deleteTokenFromStorage();
-    this.userSubj.next(undefined);
-  }
-
-  /**
-   * Return isAuthenticated
-   * return {{ boolean }}
-   */
-  public isAuthenticated(): boolean {
-    const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
-
-    if (isAuthenticatedToken) {
-      this.getUser();
-    }
-
-    return isAuthenticatedToken;
-  }
-
-  /**
-   * Return token
-   */
-  public getToken(): string {
-    return this.getTokenFromStorage();
   }
 
   /**

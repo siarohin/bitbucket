@@ -2,8 +2,6 @@ import { Component } from "@angular/core";
 import { Title, Meta } from "@angular/platform-browser";
 import { RouterOutlet } from "@angular/router";
 
-import { SpinnerService } from "../widgets/index";
-
 /**
  * Dashboard layout component
  */
@@ -16,15 +14,9 @@ export class DashboardLayoutComponent {
   private titleService: Title;
   private metaService: Meta;
 
-  /**
-   * public spinner service
-   */
-  public spinnerService: SpinnerService;
-
-  constructor(titleService: Title, metaService: Meta, spinnerService: SpinnerService) {
+  constructor(titleService: Title, metaService: Meta) {
     this.titleService = titleService;
     this.metaService = metaService;
-    this.spinnerService = spinnerService;
   }
 
   /**

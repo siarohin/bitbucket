@@ -31,3 +31,8 @@ export const KEY_KODES: Array<number> = [ENTER, COMMA];
  * Default author
  */
 export const DEFAULT_AUTHOR: AuthorsModel = { name: "John", lastName: "Doe", id: undefined };
+
+/**
+ * Default debounce time before before new event is emitted
+ */
+export const DEBOUNCE_TIME = 300;
