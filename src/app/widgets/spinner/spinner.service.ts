@@ -36,14 +36,14 @@ export class SpinnerService implements OnDestroy {
   /**
    * hide spinner
    */
-  public hide(): void {
+  public hideSpinner(): void {
     this.visibleSubj.next(false);
   }
 
   /**
    * show spinner
    */
-  public show(): void {
+  public showSpinner(): void {
     this.visibleSubj.next(true);
   }
 }

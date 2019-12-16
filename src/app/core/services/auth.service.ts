@@ -1,14 +1,13 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, of as observableOf } from "rxjs";
-import { publishReplay, refCount, map } from "rxjs/operators";
+import { publishReplay, refCount, map, catchError, switchMap, take } from "rxjs/operators";
 import isNil from "lodash/isNil";
 
 import { StorageService } from "./storage.service";
-import { UserAuthModel, NameModel, TokenRequestModel } from "./models/index";
+import { UserAuthModel, NameModel, TokenRequestModel, AuthenticationModel } from "./models/index";
 import { ServicesModule } from "./services.module";
 import { UsersAPI } from "./auth.config";
-import { SpinnerService } from "../../widgets/index";
 
 /**
  * Constant for token name
@@ -34,19 +33,13 @@ export class AuthService {
   private usersUrl: string;
   private storageService: StorageService;
   private userSubj: BehaviorSubject<UserAuthModel> = new BehaviorSubject(undefined);
-  private spinner: SpinnerService;
 
   /**
    * Observable<NameModel>
    */
   public user$: Observable<NameModel>;
 
-  constructor(
-    storageService: StorageService,
-    http: HttpClient,
-    @Inject(UsersAPI) usersUrl: string,
-    spinner: SpinnerService,
-  ) {
+  constructor(storageService: StorageService, http: HttpClient, @Inject(UsersAPI) usersUrl: string) {
     this.http = http;
     this.usersUrl = usersUrl;
     this.storageService = storageService;
@@ -55,15 +48,13 @@ export class AuthService {
       publishReplay(1),
       refCount(),
     );
-    this.spinner = spinner;
   }
 
   /**
    * Authenticate user
    */
-  public authenticate(login: string, password: string): Promise<UserAuthModel | Observable<never>> {
-    this.spinner.show();
-
+  public authenticate(auth: AuthenticationModel): Observable<UserAuthModel> {
+    const { login, password } = auth;
     const url = `${this.usersUrl}/${AuthApi.login}`;
     const body: string = JSON.stringify({
       login,
@@ -73,20 +64,14 @@ export class AuthService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
-    return this.http
-      .post<Partial<UserAuthModel>>(url, body, options)
-      .toPromise()
-      .then((response: TokenRequestModel) => {
+    return this.http.post<TokenRequestModel>(url, body, options).pipe(
+      switchMap((response: TokenRequestModel) => {
         const { token } = response;
         this.setTokenToStorage(token);
-        this.spinner.hide();
         return this.getUser(token);
-      })
-      .catch(err => {
-        this.handleError(err);
-        this.spinner.hide();
-        return throwError("Please try again later");
-      });
+      }),
+      catchError(() => observableOf(undefined)),
+    );
   }
 
   /**
@@ -105,7 +90,9 @@ export class AuthService {
     const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
 
     if (isAuthenticatedToken) {
-      this.getUser();
+      this.getUser()
+        .pipe(take(1))
+        .subscribe();
     }
 
     return observableOf(isAuthenticatedToken);
@@ -118,7 +105,7 @@ export class AuthService {
     return this.getTokenFromStorage();
   }
 
-  private getUser(token: string = this.getTokenFromStorage()): Promise<UserAuthModel | Observable<never>> {
+  private getUser(token: string = this.getTokenFromStorage()): Observable<UserAuthModel> {
     const url = `${this.usersUrl}/${AuthApi.user}`;
     const body: string = JSON.stringify({
       token,
@@ -127,17 +114,16 @@ export class AuthService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
-    return this.http
-      .post<UserAuthModel>(url, body, options)
-      .toPromise()
-      .then(user => {
+    return this.http.post<UserAuthModel>(url, body, options).pipe(
+      switchMap(user => {
         this.userSubj.next(user);
-        return user;
-      })
-      .catch(err => {
+        return observableOf(user);
+      }),
+      catchError(err => {
         this.handleError(err);
         return throwError("Please try again later");
-      });
+      }),
+    );
   }
 
   /**

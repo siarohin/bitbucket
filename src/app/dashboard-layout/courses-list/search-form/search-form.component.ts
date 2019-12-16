@@ -1,6 +1,6 @@
-import { Component, Output, ChangeDetectionStrategy, OnDestroy } from "@angular/core";
+import { Component, Output, ChangeDetectionStrategy } from "@angular/core";
 import { Subject, Observable } from "rxjs";
-import { debounceTime, distinctUntilChanged, takeUntil, filter } from "rxjs/operators";
+import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
 
 import { FA_ICONS, IconDefinition } from "../../../shared/index";
 import { DEBOUNCE_TIME } from "../../../core/index";
@@ -24,8 +24,7 @@ const MIN_CHARS = 3;
   styleUrls: ["./search-form.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SearchFormComponent implements OnDestroy {
-  private destroySubj: Subject<boolean> = new Subject();
+export class SearchFormComponent {
   private inputValueSubj: Subject<string> = new Subject();
 
   /**
@@ -40,24 +39,11 @@ export class SearchFormComponent implements OnDestroy {
   public search$: Observable<string>;
 
   constructor() {
-    // Using an operator like takeUntil instead
-    // of manually unsubscribing will also complete
-    // the observable, triggering any completion event
-    // on the observable.
     this.search$ = this.inputValueSubj.asObservable().pipe(
       distinctUntilChanged((prevValue, currValue) => prevValue.trim() === currValue.trim()),
       filter(value => !value.length || value.trim().length >= MIN_CHARS),
       debounceTime(DEBOUNCE_TIME),
-      takeUntil(this.destroySubj),
     );
-  }
-
-  /**
-   * ngOnDestroy
-   */
-  public ngOnDestroy(): void {
-    this.destroySubj.next(true);
-    this.destroySubj.unsubscribe();
   }
 
   /**
