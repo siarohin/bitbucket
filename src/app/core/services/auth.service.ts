@@ -1,11 +1,11 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
 import { Observable, BehaviorSubject, throwError, of as observableOf } from "rxjs";
-import { publishReplay, refCount, map, catchError, switchMap, take } from "rxjs/operators";
+import { map, catchError, switchMap, tap } from "rxjs/operators";
 import isNil from "lodash/isNil";
 
 import { StorageService } from "./storage.service";
-import { UserAuthModel, NameModel, TokenRequestModel, AuthenticationModel } from "./models/index";
+import { UserAuthModel, TokenRequestModel, AuthenticationModel } from "./models/index";
 import { ServicesModule } from "./services.module";
 import { UsersAPI } from "./auth.config";
 
@@ -32,22 +32,12 @@ export class AuthService {
   private http: HttpClient;
   private usersUrl: string;
   private storageService: StorageService;
-  private userSubj: BehaviorSubject<UserAuthModel> = new BehaviorSubject(undefined);
-
-  /**
-   * Observable<NameModel>
-   */
-  public user$: Observable<NameModel>;
+  private isLoggedOutSubj: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(storageService: StorageService, http: HttpClient, @Inject(UsersAPI) usersUrl: string) {
     this.http = http;
     this.usersUrl = usersUrl;
     this.storageService = storageService;
-    this.user$ = this.userSubj.asObservable().pipe(
-      map(user => (isNil(user) ? undefined : user.name)),
-      publishReplay(1),
-      refCount(),
-    );
   }
 
   /**
@@ -68,9 +58,12 @@ export class AuthService {
       switchMap((response: TokenRequestModel) => {
         const { token } = response;
         this.setTokenToStorage(token);
-        return this.getUser(token);
+
+        return this.getUser(token).pipe(
+          tap(() => this.isLoggedOutSubj.next(false)),
+          catchError(() => observableOf(undefined)),
+        );
       }),
-      catchError(() => observableOf(undefined)),
     );
   }
 
@@ -79,7 +72,7 @@ export class AuthService {
    */
   public logout(): void {
     this.deleteTokenFromStorage();
-    this.userSubj.next(undefined);
+    this.isLoggedOutSubj.next(true);
   }
 
   /**
@@ -89,12 +82,6 @@ export class AuthService {
   public isAuthenticated(): Observable<boolean> {
     const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
 
-    if (isAuthenticatedToken) {
-      this.getUser()
-        .pipe(take(1))
-        .subscribe();
-    }
-
     return observableOf(isAuthenticatedToken);
   }
 
@@ -103,6 +90,20 @@ export class AuthService {
    */
   public getToken(): string {
     return this.getTokenFromStorage();
+  }
+
+  public get user$(): Observable<UserAuthModel> {
+    return this.isLoggedOutSubj.asObservable().pipe(
+      switchMap(isLoggedOut => {
+        const token: string = this.getTokenFromStorage();
+
+        if (isLoggedOut || !token) {
+          return observableOf(undefined);
+        } else {
+          return this.getUser();
+        }
+      }),
+    );
   }
 
   private getUser(token: string = this.getTokenFromStorage()): Observable<UserAuthModel> {
@@ -115,10 +116,7 @@ export class AuthService {
     };
 
     return this.http.post<UserAuthModel>(url, body, options).pipe(
-      switchMap(user => {
-        this.userSubj.next(user);
-        return observableOf(user);
-      }),
+      map(user => user as UserAuthModel),
       catchError(err => {
         this.handleError(err);
         return throwError("Please try again later");
