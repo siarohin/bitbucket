@@ -11,12 +11,10 @@ describe("HeaderComponent:", () => {
   let fixture: ComponentFixture<HeaderComponent>;
 
   const authServiceMock: jasmine.SpyObj<AuthService> = jasmine.createSpyObj("AuthService", [
-    "getIsAuthenticated",
-    "getUserInfo",
+    "isAuthenticated",
   ]);
 
-  authServiceMock.getIsAuthenticated.and.returnValue(observableOf(true));
-  authServiceMock.getUserInfo.and.returnValue(observableOf(undefined));
+  authServiceMock.isAuthenticated.and.returnValue(true);
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({

@@ -8,3 +8,4 @@ export * from "./authors.model";
 export * from "./name.model";
 export * from "./token-request.model";
 export * from "./courses-per-page.model";
+export * from "./authentication.model";

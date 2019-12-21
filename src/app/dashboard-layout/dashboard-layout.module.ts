@@ -10,7 +10,6 @@ import { CoursesListModule } from "./courses-list/index";
 import { CoursePageComponent } from "./course-page/index";
 import { PathNotFoundComponent } from "./path-not-found/index";
 import { DashboardLayoutRoutingModule } from "./dashboard-layout-routing.module";
-import { SpinnerModule } from "../widgets/index";
 
 @NgModule({
   declarations: [
@@ -22,13 +21,7 @@ import { SpinnerModule } from "../widgets/index";
     PathNotFoundComponent,
     CoursePageComponent,
   ],
-  imports: [
-    CommonModule,
-    SharedModule,
-    CoursesListModule,
-    SpinnerModule.forRoot(),
-    DashboardLayoutRoutingModule,
-  ],
+  imports: [CommonModule, SharedModule, CoursesListModule, DashboardLayoutRoutingModule],
   exports: [DashboardLayoutComponent, FooterComponent, HeaderComponent],
 })
 export class DashboardLayoutModule {}

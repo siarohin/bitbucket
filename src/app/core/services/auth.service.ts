@@ -1,11 +1,11 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
-import { Observable, BehaviorSubject, throwError } from "rxjs";
-import { publishReplay, refCount, map } from "rxjs/operators";
+import { Observable, BehaviorSubject, throwError, of as observableOf } from "rxjs";
+import { map, catchError, switchMap, tap } from "rxjs/operators";
 import isNil from "lodash/isNil";
 
 import { StorageService } from "./storage.service";
-import { UserAuthModel, NameModel, TokenRequestModel } from "./models/index";
+import { UserAuthModel, TokenRequestModel, AuthenticationModel } from "./models/index";
 import { ServicesModule } from "./services.module";
 import { UsersAPI } from "./auth.config";
 
@@ -32,53 +32,19 @@ export class AuthService {
   private http: HttpClient;
   private usersUrl: string;
   private storageService: StorageService;
-  private userSubj: BehaviorSubject<UserAuthModel> = new BehaviorSubject(undefined);
-
-  /**
-   * Observable<NameModel>
-   */
-  public user$: Observable<NameModel>;
+  private isLoggedOutSubj: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(storageService: StorageService, http: HttpClient, @Inject(UsersAPI) usersUrl: string) {
     this.http = http;
     this.usersUrl = usersUrl;
     this.storageService = storageService;
-    this.user$ = this.userSubj.asObservable().pipe(
-      map(user => (isNil(user) ? user : user.name)),
-      publishReplay(1),
-      refCount(),
-    );
-  }
-
-  /**
-   * Get user
-   */
-  public getUser(token: string = this.getTokenFromStorage()): Promise<UserAuthModel | Observable<never>> {
-    const url = `${this.usersUrl}/${AuthApi.user}`;
-    const body: string = JSON.stringify({
-      token,
-    });
-    const options = {
-      headers: new HttpHeaders({ "Content-Type": "application/json" }),
-    };
-
-    return this.http
-      .post<UserAuthModel>(url, body, options)
-      .toPromise()
-      .then(user => {
-        this.userSubj.next(user);
-        return user;
-      })
-      .catch(err => {
-        this.handleError(err);
-        return throwError("Please try again later");
-      });
   }
 
   /**
    * Authenticate user
    */
-  public authenticate(login: string, password: string): Promise<UserAuthModel | Observable<never>> {
+  public authenticate(auth: AuthenticationModel): Observable<UserAuthModel> {
+    const { login, password } = auth;
     const url = `${this.usersUrl}/${AuthApi.login}`;
     const body: string = JSON.stringify({
       login,
@@ -88,18 +54,17 @@ export class AuthService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
-    return this.http
-      .post<Partial<UserAuthModel>>(url, body, options)
-      .toPromise()
-      .then((response: TokenRequestModel) => {
+    return this.http.post<TokenRequestModel>(url, body, options).pipe(
+      switchMap((response: TokenRequestModel) => {
         const { token } = response;
         this.setTokenToStorage(token);
-        return this.getUser(token);
-      })
-      .catch(err => {
-        this.handleError(err);
-        return throwError("Please try again later");
-      });
+
+        return this.getUser(token).pipe(
+          tap(() => this.isLoggedOutSubj.next(false)),
+          catchError(() => observableOf(undefined)),
+        );
+      }),
+    );
   }
 
   /**
@@ -107,21 +72,17 @@ export class AuthService {
    */
   public logout(): void {
     this.deleteTokenFromStorage();
-    this.userSubj.next(undefined);
+    this.isLoggedOutSubj.next(true);
   }
 
   /**
    * Return isAuthenticated
    * return {{ boolean }}
    */
-  public isAuthenticated(): boolean {
+  public isAuthenticated(): Observable<boolean> {
     const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
 
-    if (isAuthenticatedToken) {
-      this.getUser();
-    }
-
-    return isAuthenticatedToken;
+    return observableOf(isAuthenticatedToken);
   }
 
   /**
@@ -129,6 +90,38 @@ export class AuthService {
    */
   public getToken(): string {
     return this.getTokenFromStorage();
+  }
+
+  public get user$(): Observable<UserAuthModel> {
+    return this.isLoggedOutSubj.asObservable().pipe(
+      switchMap(isLoggedOut => {
+        const token: string = this.getTokenFromStorage();
+
+        if (isLoggedOut || !token) {
+          return observableOf(undefined);
+        } else {
+          return this.getUser();
+        }
+      }),
+    );
+  }
+
+  private getUser(token: string = this.getTokenFromStorage()): Observable<UserAuthModel> {
+    const url = `${this.usersUrl}/${AuthApi.user}`;
+    const body: string = JSON.stringify({
+      token,
+    });
+    const options = {
+      headers: new HttpHeaders({ "Content-Type": "application/json" }),
+    };
+
+    return this.http.post<UserAuthModel>(url, body, options).pipe(
+      map(user => user as UserAuthModel),
+      catchError(err => {
+        this.handleError(err);
+        return throwError("Please try again later");
+      }),
+    );
   }
 
   /**

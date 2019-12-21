@@ -1,7 +1,9 @@
 import { Injectable } from "@angular/core";
 import { CanActivate, Router } from "@angular/router";
+import { Observable } from "rxjs";
 
 import { AuthService } from "../services/index";
+import { tap } from "rxjs/operators";
 
 /**
  * Auth guard
@@ -21,13 +23,13 @@ export class AuthGuard implements CanActivate {
   /**
    * canActivate
    */
-  public canActivate(): Promise<boolean> | boolean {
-    const isAuthenticated: boolean = this.authService.isAuthenticated();
-
-    if (!isAuthenticated) {
-      this.router.navigate(["/login"]);
-    }
-
-    return isAuthenticated;
+  public canActivate(): Observable<boolean> {
+    return this.authService.isAuthenticated().pipe(
+      tap(isAuthenticated => {
+        if (!isAuthenticated) {
+          this.router.navigate(["/login"]);
+        }
+      }),
+    );
   }
 }

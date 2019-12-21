@@ -2,7 +2,7 @@ import { Component, OnInit, Input } from "@angular/core";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
 import { Observable, Subscription } from "rxjs";
-import { publishReplay, refCount, map, switchMap, tap } from "rxjs/operators";
+import { publishReplay, refCount, map, switchMap } from "rxjs/operators";
 import isNil from "lodash/isNil";
 import assign from "lodash/assign";
 import last from "lodash/last";
@@ -15,7 +15,6 @@ import {
   DialogAction,
   Dictionary,
 } from "../../core/index";
-import { SpinnerService } from "src/app/widgets/index";
 import { DeleteCourseComponent } from "./delete-course/index";
 import { AddCourseComponent } from "./add-course/index";
 
@@ -47,7 +46,6 @@ export class CoursesListComponent implements OnInit {
   private orderBy: OrderByPipe;
   private router: Router;
   private subscription: Subscription;
-  private spinner: SpinnerService;
   private hideLoadButtonBF: boolean;
 
   /**
@@ -61,7 +59,6 @@ export class CoursesListComponent implements OnInit {
   @Input()
   public set hideLoadButton(value: boolean) {
     this.hideLoadButtonBF = value;
-    this.spinner.hide();
   }
   public get hideLoadButton(): boolean {
     return this.hideLoadButtonBF;
@@ -87,13 +84,11 @@ export class CoursesListComponent implements OnInit {
     coursesListService: CoursesListService,
     dialog: MatDialog,
     router: Router,
-    spinner: SpinnerService,
   ) {
     this.orderBy = orderBy;
     this.coursesListService = coursesListService;
     this.dialog = dialog;
     this.router = router;
-    this.spinner = spinner;
   }
 
   /**
@@ -110,7 +105,6 @@ export class CoursesListComponent implements OnInit {
    * On load button click
    */
   public onLoad(): void {
-    this.spinner.show();
     this.coursesListService.loadMoreCourses();
   }
 

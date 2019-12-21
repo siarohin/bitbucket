@@ -1,5 +1,5 @@
 <div class="courses-list">
-  <app-search-form (search)="onSearchCourses($event)"></app-search-form>
+  <app-search-form (search$)="onSearchCourses($event)"></app-search-form>
 
   <button (click)="onAddCourse()" mat-flat-button class="add-course-btn">
     <fa-icon [icon]="faPlus"></fa-icon>
@@ -46,11 +46,7 @@
   <div class="list">
     <mat-card class="empty-container loading">
       <mat-card-content>
-        <div class="lds-facebook">
-          <div></div>
-          <div></div>
-          <div></div>
-        </div>
+        {{ "Please, wait" | uppercase }}
       </mat-card-content>
     </mat-card>
   </div>

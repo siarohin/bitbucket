@@ -1,8 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { Observable } from "rxjs";
+import { publishReplay, refCount, tap } from "rxjs/operators";
 
-import { AuthService, NameModel } from "../../core/index";
+import { AuthService, UserAuthModel } from "../../core/index";
 
 @Component({
   selector: "app-header",
@@ -17,7 +18,7 @@ export class HeaderComponent implements OnInit {
    * user's info
    * Observable<UserAuthModel>
    */
-  public user$: Observable<NameModel>;
+  public user$: Observable<UserAuthModel>;
 
   constructor(authService: AuthService, router: Router) {
     this.authService = authService;
@@ -28,7 +29,7 @@ export class HeaderComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.user$ = this.authService.user$;
+    this.user$ = this.authService.user$.pipe(publishReplay(1), refCount());
   }
 
   /**

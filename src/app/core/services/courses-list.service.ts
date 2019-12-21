@@ -1,12 +1,12 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of as observableOf, BehaviorSubject } from "rxjs";
-import { catchError, retry, concatMap, switchMap, delay, scan, tap } from "rxjs/operators";
+import { catchError, retry, concatMap, switchMap, tap } from "rxjs/operators";
 
 import { ServicesModule } from "./services.module";
 import { CourseItemModel, CoursesPerPageModel } from "./models/index";
 import { CoursesAPI } from "./courses-list.config";
-import { DELAY_TIME, RETRY_REQ, COURSES_PER_PAGE } from "../constants";
+import { RETRY_REQ, COURSES_PER_PAGE } from "../constants";
 
 /**
  * Courses list service
@@ -41,7 +41,6 @@ export class CoursesListService {
    */
   public getCoursesList(isLimited: boolean = true): Observable<Array<CourseItemModel>> {
     return this.coursesPerPageSubj.asObservable().pipe(
-      delay(DELAY_TIME),
       switchMap(coursesPerPage => {
         const queryParams: any = isLimited
           ? { start: `${coursesPerPage.start}`, count: `${coursesPerPage.count}` }
@@ -75,7 +74,6 @@ export class CoursesListService {
     };
 
     return this.http.post<CourseItemModel>(url, body, options).pipe(
-      delay(DELAY_TIME),
       concatMap(() => this.getCoursesList()),
       catchError(() => observableOf(undefined)),
     );
@@ -106,7 +104,6 @@ export class CoursesListService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
     return this.http.patch<CourseItemModel>(url, body, options).pipe(
-      delay(DELAY_TIME),
       concatMap(() => this.getCoursesList()),
       catchError(() => observableOf(undefined)),
     );
@@ -119,10 +116,7 @@ export class CoursesListService {
    */
   public removeCourseItem(courseItem: CourseItemModel): Observable<Array<CourseItemModel>> {
     const url = `${this.coursesUrl}/${courseItem.id}`;
-    return this.http.delete(url).pipe(
-      delay(DELAY_TIME),
-      concatMap(() => this.getCoursesList()),
-    );
+    return this.http.delete(url).pipe(concatMap(() => this.getCoursesList()));
   }
 
   /**
@@ -146,7 +140,6 @@ export class CoursesListService {
         params: { textFragment: value },
       })
       .pipe(
-        delay(DELAY_TIME),
         retry(RETRY_REQ),
         catchError(() => observableOf([])),
       );
