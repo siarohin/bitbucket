@@ -29,7 +29,7 @@ export class HeaderComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.user$ = this.authService.user$.pipe(tap(console.log), publishReplay(1), refCount());
+    this.user$ = this.authService.user$.pipe(publishReplay(1), refCount());
   }
 
   /**
