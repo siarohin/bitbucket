@@ -3,7 +3,7 @@ import { NgModule } from "@angular/core";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 
 import { SpinnerModule } from "./widgets/index";
-import { ServicesModule, AuthInterceptor, LoaderInterceptor } from "./core/index";
+import { ServicesModule, AuthInterceptor, LoaderInterceptor, AppStoreModule } from "./core/index";
 import { AppRoutingModule } from "./app-routing.module";
 import { DashboardLayoutModule } from "./dashboard-layout/index";
 import { AppComponent } from "./app.component";
@@ -12,9 +12,10 @@ import { AppComponent } from "./app.component";
   declarations: [AppComponent],
   imports: [
     BrowserModule,
+    HttpClientModule,
     ServicesModule,
     AppRoutingModule,
-    HttpClientModule,
+    AppStoreModule,
     DashboardLayoutModule,
     SpinnerModule.forRoot(),
   ],

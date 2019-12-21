@@ -1,8 +1,7 @@
 import { Injectable, Inject } from "@angular/core";
-import { HttpClient, HttpHeaders, HttpErrorResponse } from "@angular/common/http";
-import { Observable, BehaviorSubject, throwError, of as observableOf } from "rxjs";
-import { map, catchError, switchMap, tap } from "rxjs/operators";
-import isNil from "lodash/isNil";
+import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Observable, of as observableOf } from "rxjs";
+import { map, catchError } from "rxjs/operators";
 
 import { StorageService } from "./storage.service";
 import { UserAuthModel, TokenRequestModel, AuthenticationModel } from "./models/index";
@@ -32,7 +31,6 @@ export class AuthService {
   private http: HttpClient;
   private usersUrl: string;
   private storageService: StorageService;
-  private isLoggedOutSubj: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   constructor(storageService: StorageService, http: HttpClient, @Inject(UsersAPI) usersUrl: string) {
     this.http = http;
@@ -43,7 +41,7 @@ export class AuthService {
   /**
    * Authenticate user
    */
-  public authenticate(auth: AuthenticationModel): Observable<UserAuthModel> {
+  public authenticate(auth: AuthenticationModel): Observable<TokenRequestModel> {
     const { login, password } = auth;
     const url = `${this.usersUrl}/${AuthApi.login}`;
     const body: string = JSON.stringify({
@@ -54,59 +52,15 @@ export class AuthService {
       headers: new HttpHeaders({ "Content-Type": "application/json" }),
     };
 
-    return this.http.post<TokenRequestModel>(url, body, options).pipe(
-      switchMap((response: TokenRequestModel) => {
-        const { token } = response;
-        this.setTokenToStorage(token);
-
-        return this.getUser(token).pipe(
-          tap(() => this.isLoggedOutSubj.next(false)),
-          catchError(() => observableOf(undefined)),
-        );
-      }),
-    );
+    return this.http
+      .post<TokenRequestModel>(url, body, options)
+      .pipe(catchError(() => observableOf(undefined)));
   }
 
   /**
-   * Logout user
+   * Get user by token
    */
-  public logout(): void {
-    this.deleteTokenFromStorage();
-    this.isLoggedOutSubj.next(true);
-  }
-
-  /**
-   * Return isAuthenticated
-   * return {{ boolean }}
-   */
-  public isAuthenticated(): Observable<boolean> {
-    const isAuthenticatedToken: boolean = !isNil(this.getTokenFromStorage());
-
-    return observableOf(isAuthenticatedToken);
-  }
-
-  /**
-   * Return token
-   */
-  public getToken(): string {
-    return this.getTokenFromStorage();
-  }
-
-  public get user$(): Observable<UserAuthModel> {
-    return this.isLoggedOutSubj.asObservable().pipe(
-      switchMap(isLoggedOut => {
-        const token: string = this.getTokenFromStorage();
-
-        if (isLoggedOut || !token) {
-          return observableOf(undefined);
-        } else {
-          return this.getUser();
-        }
-      }),
-    );
-  }
-
-  private getUser(token: string = this.getTokenFromStorage()): Observable<UserAuthModel> {
+  public getUser(token: string): Observable<UserAuthModel> {
     const url = `${this.usersUrl}/${AuthApi.user}`;
     const body: string = JSON.stringify({
       token,
@@ -117,39 +71,14 @@ export class AuthService {
 
     return this.http.post<UserAuthModel>(url, body, options).pipe(
       map(user => user as UserAuthModel),
-      catchError(err => {
-        this.handleError(err);
-        return throwError("Please try again later");
-      }),
+      catchError(() => observableOf(undefined)),
     );
   }
 
   /**
-   * Get token from storage
+   * Return token for guard / interceptor from long-life storage
    */
-  private getTokenFromStorage(): string {
+  public getToken(): string {
     return this.storageService.getItem(TOKEN);
-  }
-
-  /**
-   * Set token to storage
-   */
-  private setTokenToStorage(token: string): void {
-    this.storageService.setItem(TOKEN, token);
-  }
-
-  /**
-   * delete token from storage
-   */
-  private deleteTokenFromStorage(): void {
-    this.storageService.removeItem([TOKEN]);
-  }
-
-  private handleError(err: HttpErrorResponse) {
-    if (err.error instanceof ErrorEvent) {
-      console.error("An error occurred:", err.error.message);
-    } else {
-      console.error(err.error);
-    }
   }
 }

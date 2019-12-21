@@ -1,10 +1,9 @@
 import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, ParamMap } from "@angular/router";
-import { of as observableOf, Subscription } from "rxjs";
-import { switchMap } from "rxjs/operators";
+import { Observable } from "rxjs";
+import { publishReplay, refCount } from "rxjs/operators";
 
-import { FA_ICONS, IconDefinition, AutoUnsubscribe } from "../../shared/index";
-import { CourseItemModel, CoursesListService } from "../../core/index";
+import { FA_ICONS, IconDefinition } from "../../shared/index";
+import { CourseItemModel, CoursesFacade } from "../../core/index";
 
 /**
  * Font Awesome icons from shared module
@@ -14,16 +13,13 @@ const { faClock, faCalendarAlt } = FA_ICONS;
 /**
  * Course page
  */
-@AutoUnsubscribe()
 @Component({
   selector: "app-course-page",
   templateUrl: "./course-page.component.html",
   styleUrls: ["./course-page.component.scss"],
 })
 export class CoursePageComponent implements OnInit {
-  private route: ActivatedRoute;
-  private coursesListService: CoursesListService;
-  private subscription: Subscription;
+  private coursesFacade: CoursesFacade;
 
   /**
    * Fontawesome icons
@@ -34,25 +30,16 @@ export class CoursePageComponent implements OnInit {
   /**
    * course item
    */
-  public course: CourseItemModel;
+  public course$: Observable<CourseItemModel>;
 
-  constructor(route: ActivatedRoute, coursesListService: CoursesListService) {
-    this.route = route;
-    this.coursesListService = coursesListService;
+  constructor(coursesFacade: CoursesFacade) {
+    this.coursesFacade = coursesFacade;
   }
 
   /**
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.subscription = this.route.paramMap
-      .pipe(
-        switchMap((params: ParamMap) => {
-          return params.get("id")
-            ? this.coursesListService.getCourseItem(+params.get("id"))
-            : observableOf(undefined);
-        }),
-      )
-      .subscribe(course => (this.course = course));
+    this.course$ = this.coursesFacade.course$.pipe(publishReplay(1), refCount());
   }
 }
