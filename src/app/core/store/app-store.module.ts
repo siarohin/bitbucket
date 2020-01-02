@@ -8,6 +8,7 @@ import { StoreDevtoolsModule } from "@ngrx/store-devtools";
 import { environment } from "../../../environments/environment";
 import { UserStoreModule } from "./user/index";
 import { CoursesStoreModule } from "./courses/index";
+import { AuthorsStoreModule } from "./authors/index";
 import { routerReducers, CustomSerializer } from "./router/index";
 
 @NgModule({
@@ -27,6 +28,7 @@ import { routerReducers, CustomSerializer } from "./router/index";
     EffectsModule.forRoot([]),
     CoursesStoreModule,
     UserStoreModule,
+    AuthorsStoreModule,
     !environment.production ? StoreDevtoolsModule.instrument() : [],
   ],
 })

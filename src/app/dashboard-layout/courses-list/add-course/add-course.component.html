@@ -5,32 +5,40 @@
       <mat-form-field appearance="outline">
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" />
+        <mat-error *ngIf="name.invalid && name.errors.required">field is required</mat-error>
+        <mat-error *ngIf="name.invalid && name.errors.minlength && !name.errors.required"
+          >min length < 50</mat-error
+        >
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Description</mat-label>
+        <mat-label>Description (max {{ 500 - description.value?.length }} symbols)</mat-label>
         <textarea matInput formControlName="description" class="text-area"></textarea>
+        <mat-error *ngIf="description.invalid && description.errors.required">field is required</mat-error>
+        <mat-error *ngIf="description.invalid && description.errors.maxlength && !description.errors.required"
+          >max length > 500</mat-error
+        >
       </mat-form-field>
 
+      <!-- separate form' components -->
       <div class="course-fields">
-        <app-duration-course
-          [durationValue]="getDuration()"
-          (changeDuration)="onChangeDuration($event)"
-        ></app-duration-course>
-        <app-creation-course-date
-          [dateValue]="getDate()"
-          (changeDate)="onChangeDate($event)"
-        ></app-creation-course-date>
-        <app-course-authors
-          [authors]="getAuthors()"
-          (changeAuthors)="onChangeAuthors($event)"
-        ></app-course-authors>
+        <app-duration-course formControlName="length"></app-duration-course>
+        <app-creation-course-date formControlName="date"></app-creation-course-date>
+        <app-course-authors formControlName="authors"></app-course-authors>
       </div>
+      <!--// separate form' components -->
     </mat-card-content>
 
     <mat-card-actions class="actions">
       <button mat-flat-button type="button" (click)="onCancelClick()" class="btn">Cancel</button>
-      <button mat-flat-button type="submit" [disabled]="!courseForm.valid" class="submit-btn">Save</button>
+      <button
+        mat-flat-button
+        type="submit"
+        [disabled]="courseForm.invalid || courseForm.pristine"
+        class="submit-btn"
+      >
+        Save
+      </button>
     </mat-card-actions>
   </form>
 </mat-card>

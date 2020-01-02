@@ -8,11 +8,12 @@ const reducer: ActionReducer<UserState> = createReducer(
   initialUserState,
   on(UserActions.getUserSuccess, (state, { user }) => {
     const data: UserAuthModel = user;
-    return { ...state, data };
+    const error: string = undefined;
+    return { ...state, data, error };
   }),
-  on(UserActions.getUserError, state => {
+  on(UserActions.getUserError, (state, { error }) => {
     const data: UserAuthModel = undefined;
-    return { ...state, data };
+    return { ...state, data, error };
   }),
   on(UserActions.logoutUser, state => {
     const data: UserAuthModel = undefined;

@@ -8,9 +8,9 @@ import { MatCardModule } from "@angular/material/card";
 import { MatInputModule } from "@angular/material/input";
 import { MatDialogModule } from "@angular/material/dialog";
 import { MatFormFieldModule } from "@angular/material/form-field";
-import { MatDatepickerModule } from "@angular/material/datepicker";
-import { MatNativeDateModule } from "@angular/material";
+import { MatDatepickerModule, MatNativeDateModule, MAT_DATE_FORMATS, DateAdapter } from "@angular/material";
 import { MatChipsModule } from "@angular/material/chips";
+import { MatAutocompleteModule } from "@angular/material/autocomplete";
 import { MatIconModule } from "@angular/material/icon";
 import { FontAwesomeModule } from "@fortawesome/angular-fontawesome";
 import { IconDefinition, faClock, faCalendarAlt } from "@fortawesome/free-regular-svg-icons";
@@ -27,6 +27,7 @@ import {
 import { ConvertTimePipe, TruncatePipe, OrderByPipe, HighlightSearch } from "./pipes/index";
 import { HighlightDirective } from "./directives/index";
 import { Dictionary } from "../core/index";
+import { AppDateAdapter, APP_DATE_FORMATS } from "./date.adapter";
 
 /**
  * Font Awesome icons
@@ -57,12 +58,22 @@ export const FA_ICONS: Dictionary<IconDefinition> = {
     MatDatepickerModule,
     MatNativeDateModule,
     MatChipsModule,
+    MatAutocompleteModule,
     MatIconModule,
     FontAwesomeModule,
     FormsModule,
     ReactiveFormsModule,
   ],
-  providers: [MatNativeDateModule],
+  providers: [
+    {
+      provide: DateAdapter,
+      useClass: AppDateAdapter,
+    },
+    {
+      provide: MAT_DATE_FORMATS,
+      useValue: APP_DATE_FORMATS,
+    },
+  ],
   exports: [
     BrowserAnimationsModule,
     HttpClientModule,
@@ -73,6 +84,7 @@ export const FA_ICONS: Dictionary<IconDefinition> = {
     MatInputModule,
     MatDatepickerModule,
     MatChipsModule,
+    MatAutocompleteModule,
     MatIconModule,
     FormsModule,
     ReactiveFormsModule,

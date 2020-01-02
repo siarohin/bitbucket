@@ -1,8 +1,18 @@
 import { Component, Inject, ChangeDetectionStrategy, OnInit } from "@angular/core";
-import { FormGroup, FormBuilder, Validators } from "@angular/forms";
+import { FormGroup, FormBuilder, Validators, AbstractControl } from "@angular/forms";
 import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 
-import { DialogParamsModel, Dictionary, AuthorsModel } from "../../../core/index";
+import { DialogParamsModel, CourseItemModel } from "../../../core/index";
+
+/**
+ * Constant for name' min length validity
+ */
+const MIN_LENGTH: number = 50;
+
+/**
+ * Constant for description' max length validity
+ */
+const MAX_LENGTH: number = 500;
 
 /**
  * Simple component that represents dialog on add course
@@ -45,14 +55,13 @@ export class AddCourseComponent implements OnInit {
    * ngOnInit
    */
   public ngOnInit(): void {
-    const { date, description, length, name, id, authors } = this.params.data;
+    const { date, description, length, name, authors } = this.params.data;
     this.courseForm = this.fb.group({
-      name: [name, Validators.required],
-      description: [description, Validators.required],
-      length: [length, [Validators.minLength(1), Validators.pattern("[0-9]*"), Validators.required]],
-      date: [date, Validators.required],
-      authors: [authors],
-      id: [id],
+      name: [name, [Validators.required, Validators.minLength(MIN_LENGTH)]],
+      description: [description, [Validators.required, Validators.maxLength(MAX_LENGTH)]],
+      length: [{ length }],
+      date: [{ date }],
+      authors: [{ authors }],
     });
   }
 
@@ -67,56 +76,51 @@ export class AddCourseComponent implements OnInit {
    * On submit button click
    */
   public onSubmit(): void {
-    const params: DialogParamsModel = { action: this.params.action, data: this.courseForm.value };
+    const courseItem: CourseItemModel = {
+      name: this.name.value,
+      description: this.description.value,
+      length: this.length.value.length,
+      date: this.date.value.date,
+      authors: this.authors.value.authors,
+      id: this.params.data.id,
+    };
+
+    const params: DialogParamsModel = { action: this.params.action, data: courseItem };
     this.dialogRef.close(params);
   }
 
   /**
-   * On change duration value
-   * param {{ number }}
+   * `name` abstract control
    */
-  public onChangeDuration(length: number) {
-    this.courseForm.patchValue({ length });
-    this.courseForm.updateValueAndValidity();
+  public get name(): AbstractControl {
+    return this.courseForm.get("name");
   }
 
   /**
-   * On change date value
-   * param {{ string }}
+   * `description` abstract control
    */
-  public onChangeDate(value: string) {
-    const date: Date = new Date(value);
-    this.courseForm.patchValue({ date });
-    this.courseForm.updateValueAndValidity();
+  public get description(): AbstractControl {
+    return this.courseForm.get("description");
   }
 
   /**
-   * On change authors value
-   * param {{ Array<Dictionary<string>> }}
+   * `length` abstract control
    */
-  public onChangeAuthors(authors: Array<Dictionary<string>>): void {
-    this.courseForm.patchValue({ authors });
-    this.courseForm.updateValueAndValidity();
+  private get length(): AbstractControl {
+    return this.courseForm.get("length");
   }
 
   /**
-   * Get duration value
+   * `date` abstract control
    */
-  public getDuration(): number {
-    return this.courseForm.get("length").value;
+  private get date(): AbstractControl {
+    return this.courseForm.get("date");
   }
 
   /**
-   * Get serialized date value
+   * `authors` abstract control
    */
-  public getDate(): string {
-    return this.courseForm.get("date").value;
-  }
-
-  /**
-   * Get authors
-   */
-  public getAuthors(): Array<AuthorsModel> {
-    return this.courseForm.get("authors").value;
+  private get authors(): AbstractControl {
+    return this.courseForm.get("authors");
   }
 }

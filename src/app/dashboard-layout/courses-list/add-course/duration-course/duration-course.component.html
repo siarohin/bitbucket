@@ -1,9 +1,13 @@
-<mat-form-field appearance="outline" [formGroup]="courseForm">
+<mat-form-field appearance="outline" [formGroup]="durationCourseForm">
   <mat-label
     >Duration
-    <span class="mat-label__convert" *ngIf="courseForm.valid">{{
-      getDuration() | convertTime
-    }}</span></mat-label
+    <span class="mat-label__convert" *ngIf="length.valid">{{ length.value | convertTime }}</span>
+  </mat-label>
+
+  <input matInput formControlName="length" />
+
+  <mat-error *ngIf="length.invalid && length.errors.required">field is required</mat-error>
+  <mat-error *ngIf="length.invalid && length.errors.invalidNumber && !length.errors.required"
+    >value should be a number</mat-error
   >
-  <input matInput formControlName="length" (change)="onDurationChange()" />
 </mat-form-field>

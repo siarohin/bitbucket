@@ -54,7 +54,7 @@ export class AuthService {
 
     return this.http
       .post<TokenRequestModel>(url, body, options)
-      .pipe(catchError(() => observableOf(undefined)));
+      .pipe(catchError(error => observableOf(error.error)));
   }
 
   /**
