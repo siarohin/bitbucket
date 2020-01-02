@@ -10,7 +10,7 @@
     <div class="list">
       <div class="scrl-context" *ngIf="!!coursesList.length; else emptyList">
         <app-course-item
-          *ngFor="let item of coursesList; last as isLast"
+          *ngFor="let item of coursesList | orderBy: 'date':true; last as isLast"
           [course]="item"
           [isLast]="isLast"
           [formValue]="formValue"
@@ -22,7 +22,7 @@
     </div>
     <mat-card *ngIf="!!coursesList.length">
       <mat-card-content>
-        <button *ngIf="!hideLoadButton; else warning" (click)="onLoad()" mat-button>
+        <button *ngIf="loadButton$ | async; else warning" (click)="onLoad()" mat-button>
           Load more
         </button>
       </mat-card-content>

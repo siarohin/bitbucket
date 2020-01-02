@@ -1,9 +1,8 @@
 import { Component, OnInit } from "@angular/core";
-import { Router } from "@angular/router";
 import { Observable } from "rxjs";
-import { publishReplay, refCount, tap } from "rxjs/operators";
+import { publishReplay, refCount } from "rxjs/operators";
 
-import { AuthService, UserAuthModel } from "../../core/index";
+import { UserAuthModel, UserFacade } from "../../core/index";
 
 @Component({
   selector: "app-header",
@@ -11,8 +10,7 @@ import { AuthService, UserAuthModel } from "../../core/index";
   styleUrls: ["./header.component.scss"],
 })
 export class HeaderComponent implements OnInit {
-  private authService: AuthService;
-  private router: Router;
+  private userFacade: UserFacade;
 
   /**
    * user's info
@@ -20,23 +18,21 @@ export class HeaderComponent implements OnInit {
    */
   public user$: Observable<UserAuthModel>;
 
-  constructor(authService: AuthService, router: Router) {
-    this.authService = authService;
-    this.router = router;
+  constructor(userFacade: UserFacade) {
+    this.userFacade = userFacade;
   }
 
   /**
    * ngOnInit
    */
   public ngOnInit(): void {
-    this.user$ = this.authService.user$.pipe(publishReplay(1), refCount());
+    this.user$ = this.userFacade.user$.pipe(publishReplay(1), refCount());
   }
 
   /**
    * On logout button click
    */
   public onLogout(): void {
-    this.authService.logout();
-    this.router.navigate(["/login"]);
+    this.userFacade.logoutUser();
   }
 }

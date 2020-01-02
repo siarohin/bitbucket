@@ -13,13 +13,13 @@ import { CourseItemModel } from "../../core/index";
   name: "orderBy",
 })
 export class OrderByPipe implements PipeTransform {
-  transform(source: Array<CourseItemModel>, parameter?: string): Array<CourseItemModel> {
+  transform(source: Array<CourseItemModel>, parameter?: string, reverse?: boolean): Array<CourseItemModel> {
     if (isNil(source)) {
       return source;
     }
 
     if (!isNil(parameter)) {
-      return sortBy(source, [parameter]);
+      return reverse ? sortBy(source, [parameter]).reverse() : sortBy(source, [parameter]);
     }
 
     // sort by key names if parameter is not defined

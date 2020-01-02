@@ -1,12 +1,13 @@
 import { Injectable, Inject } from "@angular/core";
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Observable, of as observableOf, BehaviorSubject } from "rxjs";
-import { catchError, retry, concatMap, switchMap, tap } from "rxjs/operators";
+import { catchError, concatMap, switchMap, tap } from "rxjs/operators";
 
 import { ServicesModule } from "./services.module";
 import { CourseItemModel, CoursesPerPageModel } from "./models/index";
 import { CoursesAPI } from "./courses-list.config";
-import { RETRY_REQ, COURSES_PER_PAGE } from "../constants";
+import { COURSES_PER_PAGE } from "../constants";
+import { CoursesFacade } from "../store/courses/courses.facade";
 
 /**
  * Courses list service
@@ -20,18 +21,12 @@ export class CoursesListService {
   private coursesPerPage: CoursesPerPageModel = COURSES_PER_PAGE;
   private shouldPreventProcess = false;
   private coursesPerPageSubj: BehaviorSubject<CoursesPerPageModel> = new BehaviorSubject(COURSES_PER_PAGE);
-  private hideLoadButtonSubj: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private coursesFacade: CoursesFacade;
 
-  /**
-   * Hide load course button
-   * Observable<boolean>
-   */
-  public hideLoadButton$: Observable<boolean>;
-
-  constructor(http: HttpClient, @Inject(CoursesAPI) coursesUrl: string) {
+  constructor(http: HttpClient, @Inject(CoursesAPI) coursesUrl: string, coursesFacade: CoursesFacade) {
     this.http = http;
     this.coursesUrl = coursesUrl;
-    this.hideLoadButton$ = this.hideLoadButtonSubj.asObservable();
+    this.coursesFacade = coursesFacade;
   }
 
   /**
@@ -51,10 +46,11 @@ export class CoursesListService {
           })
           .pipe(
             tap(coursesList => {
-              this.shouldPreventProcess = coursesList.length !== this.coursesPerPage.count;
-              this.hideLoadButtonSubj.next(this.shouldPreventProcess);
+              if (isLimited) {
+                this.shouldPreventProcess = coursesList.length !== this.coursesPerPage.count;
+                this.coursesFacade.updateCoursesLength({ valid: !this.shouldPreventProcess });
+              }
             }),
-            retry(RETRY_REQ),
             catchError(() => observableOf([])),
           );
       }),
@@ -86,10 +82,7 @@ export class CoursesListService {
    */
   public getCourseItem(id: number): Observable<CourseItemModel> {
     const url = `${this.coursesUrl}/${id}`;
-    return this.http.get<CourseItemModel>(url).pipe(
-      retry(RETRY_REQ),
-      catchError(() => observableOf(undefined)),
-    );
+    return this.http.get<CourseItemModel>(url).pipe(catchError(() => observableOf(undefined)));
   }
 
   /**
@@ -123,12 +116,10 @@ export class CoursesListService {
    * Load more courses
    */
   public loadMoreCourses(): void {
-    if (this.shouldPreventProcess) {
-      return;
+    if (!this.shouldPreventProcess) {
+      this.coursesPerPage = { start: this.coursesPerPage.start, count: 2 * this.coursesPerPage.count };
+      this.coursesPerPageSubj.next(this.coursesPerPage);
     }
-
-    this.coursesPerPage = { start: this.coursesPerPage.start, count: 2 * this.coursesPerPage.count };
-    this.coursesPerPageSubj.next(this.coursesPerPage);
   }
 
   /**
@@ -139,9 +130,6 @@ export class CoursesListService {
       .get<Array<CourseItemModel>>(this.coursesUrl, {
         params: { textFragment: value },
       })
-      .pipe(
-        retry(RETRY_REQ),
-        catchError(() => observableOf([])),
-      );
+      .pipe(catchError(() => observableOf([])));
   }
 }
