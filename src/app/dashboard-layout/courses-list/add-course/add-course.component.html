@@ -6,8 +6,8 @@
         <mat-label>Name</mat-label>
         <input matInput formControlName="name" />
         <mat-error *ngIf="name.invalid && name.errors.required">field is required</mat-error>
-        <mat-error *ngIf="name.invalid && name.errors.minlength && !name.errors.required"
-          >min length < 50</mat-error
+        <mat-error *ngIf="name.invalid && name.errors.maxlength && !name.errors.required"
+          >min length > 50</mat-error
         >
       </mat-form-field>
 

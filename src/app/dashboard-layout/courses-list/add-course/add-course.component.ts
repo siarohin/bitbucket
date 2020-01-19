@@ -5,9 +5,9 @@ import { MatDialogRef, MAT_DIALOG_DATA } from "@angular/material/dialog";
 import { DialogParamsModel, CourseItemModel } from "../../../core/index";
 
 /**
- * Constant for name' min length validity
+ * Constant for name' title length validity
  */
-const MIN_LENGTH: number = 50;
+const TITLE_LENGTH: number = 50;
 
 /**
  * Constant for description' max length validity
@@ -57,7 +57,7 @@ export class AddCourseComponent implements OnInit {
   public ngOnInit(): void {
     const { date, description, length, name, authors } = this.params.data;
     this.courseForm = this.fb.group({
-      name: [name, [Validators.required, Validators.minLength(MIN_LENGTH)]],
+      name: [name, [Validators.required, Validators.maxLength(TITLE_LENGTH)]],
       description: [description, [Validators.required, Validators.maxLength(MAX_LENGTH)]],
       length: [{ length }],
       date: [{ date }],
