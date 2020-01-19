@@ -1,7 +1,9 @@
 <div class="mat-dialog">
   <h1 mat-dialog-title>{{ params.data.name }}</h1>
   <div mat-dialog-actions>
-    <button mat-button [mat-dialog-close]="params" cdkFocusInitial>Yes</button>
-    <button mat-button (click)="onCancelClick()">No</button>
+    <button mat-button [mat-dialog-close]="params" cdkFocusInitial>
+      {{ "courses.button.submit" | translate }}
+    </button>
+    <button mat-button (click)="onCancelClick()">{{ "courses.button.reject" | translate }}</button>
   </div>
 </div>

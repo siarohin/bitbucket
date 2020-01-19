@@ -1,7 +1,7 @@
 <mat-form-field appearance="outline" [formGroup]="dateCourseForm">
-  <mat-label>Date</mat-label>
+  <mat-label>{{ "courses.add-course.date" | translate }}</mat-label>
   <input matInput formControlName="date" [matDatepicker]="picker" />
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
   <mat-datepicker #picker></mat-datepicker>
-  <mat-error *ngIf="date.invalid">format should be dd/mm/yyyy</mat-error>
+  <mat-error *ngIf="date.invalid">{{ "courses.validator.not-format" | translate }}</mat-error>
 </mat-form-field>

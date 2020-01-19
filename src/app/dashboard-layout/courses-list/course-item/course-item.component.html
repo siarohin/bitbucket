@@ -25,11 +25,11 @@
   <div class="buttons">
     <button (click)="onEditBtnClick()" mat-flat-button>
       <fa-icon [icon]="faPen"></fa-icon>
-      Edit
+      {{ "courses.button.edit" | translate }}
     </button>
     <button (click)="onDeleteBtnClick()" mat-flat-button>
       <fa-icon [icon]="faTrashAlt"></fa-icon>
-      Delete
+      {{ "courses.button.delete" | translate }}
     </button>
   </div>
 </mat-card>

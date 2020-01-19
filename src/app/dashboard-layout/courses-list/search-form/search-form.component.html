@@ -1,6 +1,6 @@
 <div class="search-form" [formGroup]="searchForm">
   <div class="custom-input">
     <fa-icon [icon]="faSearch"></fa-icon>
-    <input formControlName="search" type="text" placeholder="Text to search" />
+    <input formControlName="search" type="text" [placeholder]="'search.placeholder' | translate" />
   </div>
 </div>

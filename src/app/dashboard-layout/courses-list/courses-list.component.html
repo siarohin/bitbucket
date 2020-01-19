@@ -3,7 +3,7 @@
 
   <button (click)="onAddCourse()" mat-flat-button class="add-course-btn">
     <fa-icon [icon]="faPlus"></fa-icon>
-    Add course
+    {{ "courses.button.add" | translate }}
   </button>
 
   <ng-container *ngIf="coursesList$ | async as coursesList; else loading">
@@ -23,7 +23,7 @@
     <mat-card *ngIf="!!coursesList.length">
       <mat-card-content>
         <button *ngIf="loadButton$ | async; else warning" (click)="onLoad()" mat-button>
-          Load more
+          {{ "courses.button.load" | translate }}
         </button>
       </mat-card-content>
     </mat-card>
@@ -31,13 +31,13 @@
 </div>
 
 <ng-template #warning>
-  {{ "All courses were loaded" }}
+  {{ "courses.warning.no-more" | translate }}
 </ng-template>
 
 <ng-template #emptyList>
   <mat-card class="empty-container">
     <mat-card-content>
-      {{ "No data, feel free to add new course" | uppercase }}
+      {{ "courses.warning.no-data" | translate | uppercase }}
     </mat-card-content>
   </mat-card>
 </ng-template>
@@ -46,7 +46,7 @@
   <div class="list">
     <mat-card class="empty-container loading">
       <mat-card-content>
-        {{ "Please, wait" | uppercase }}
+        {{ "courses.loading.text" | uppercase }}
       </mat-card-content>
     </mat-card>
   </div>
