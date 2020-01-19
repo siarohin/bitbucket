@@ -6,7 +6,13 @@ import { publishReplay, refCount } from "rxjs/operators";
 import isNil from "lodash/isNil";
 
 import { FA_ICONS, IconDefinition } from "../../shared/index";
-import { CourseItemModel, DialogParamsModel, DialogAction, CoursesFacade } from "../../core/index";
+import {
+  CourseItemModel,
+  DialogParamsModel,
+  DialogAction,
+  CoursesFacade,
+  AuthorsFacade,
+} from "../../core/index";
 import { DeleteCourseComponent } from "./delete-course/index";
 import { AddCourseComponent } from "./add-course/index";
 /**
@@ -24,6 +30,7 @@ const { faPlus } = FA_ICONS;
 })
 export class CoursesListComponent implements OnInit {
   private coursesFacade: CoursesFacade;
+  private authorsFacade: AuthorsFacade;
   private router: Router;
 
   /**
@@ -51,10 +58,11 @@ export class CoursesListComponent implements OnInit {
    */
   public faPlus: IconDefinition = faPlus;
 
-  constructor(dialog: MatDialog, router: Router, coursesFacade: CoursesFacade) {
+  constructor(dialog: MatDialog, router: Router, coursesFacade: CoursesFacade, authorsFacade: AuthorsFacade) {
     this.dialog = dialog;
     this.router = router;
     this.coursesFacade = coursesFacade;
+    this.authorsFacade = authorsFacade;
   }
 
   /**
@@ -62,6 +70,8 @@ export class CoursesListComponent implements OnInit {
    */
   public ngOnInit(): void {
     this.coursesFacade.getCourses();
+    this.authorsFacade.getAuthors();
+
     this.coursesList$ = this.coursesFacade.courses$.pipe(publishReplay(1), refCount());
     this.loadButton$ = this.coursesFacade.isCoursesLength$.pipe(publishReplay(1), refCount());
   }

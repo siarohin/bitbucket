@@ -8,6 +8,11 @@ export interface UserState {
    * users' data
    */
   data: Readonly<UserAuthModel>;
+
+  /**
+   * error
+   */
+  error: string;
 }
 
 /**
@@ -21,4 +26,5 @@ export const initialUserState: UserState = {
     token: undefined,
     name: undefined,
   },
+  error: undefined,
 };

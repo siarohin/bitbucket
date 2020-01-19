@@ -1,5 +1,6 @@
-import { Component, Output, ChangeDetectionStrategy } from "@angular/core";
-import { Subject, Observable } from "rxjs";
+import { Component, Output, ChangeDetectionStrategy, Inject } from "@angular/core";
+import { FormBuilder, FormGroup, AbstractControl } from "@angular/forms";
+import { Observable } from "rxjs";
 import { debounceTime, distinctUntilChanged, filter } from "rxjs/operators";
 
 import { FA_ICONS, IconDefinition } from "../../../shared/index";
@@ -25,7 +26,7 @@ const MIN_CHARS = 3;
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SearchFormComponent {
-  private inputValueSubj: Subject<string> = new Subject();
+  private fb: FormBuilder;
 
   /**
    * Fontawesome icons
@@ -33,13 +34,23 @@ export class SearchFormComponent {
   public faSearch: IconDefinition = faSearch;
 
   /**
+   * Form group
+   */
+  public searchForm: FormGroup;
+
+  /**
    * Observable of users' input value
    */
   @Output()
   public search$: Observable<string>;
 
-  constructor() {
-    this.search$ = this.inputValueSubj.asObservable().pipe(
+  constructor(@Inject(FormBuilder) fb: FormBuilder) {
+    this.fb = fb;
+    this.searchForm = this.fb.group({
+      search: [undefined],
+    });
+
+    this.search$ = this.search.valueChanges.pipe(
       distinctUntilChanged((prevValue, currValue) => prevValue.trim() === currValue.trim()),
       filter(value => !value.length || value.trim().length >= MIN_CHARS),
       debounceTime(DEBOUNCE_TIME),
@@ -47,9 +58,9 @@ export class SearchFormComponent {
   }
 
   /**
-   * On search button click
+   * `search` abstract control
    */
-  public onSearch(value: string): void {
-    this.inputValueSubj.next(value);
+  private get search(): AbstractControl {
+    return this.searchForm.get("search");
   }
 }

@@ -55,7 +55,7 @@ export class UserEffects {
               this.setTokenToStorage(token);
             }),
             map(() => UserActions.getUser()),
-            catchError(() => observableOf(UserActions.getUserError())),
+            catchError(error => observableOf(UserActions.getUserError(error))),
           );
         }),
       ),
@@ -71,10 +71,11 @@ export class UserEffects {
                 this.router.navigate(["/courses"]);
                 return UserActions.getUserSuccess({ user });
               } else {
-                return UserActions.getUserError();
+                const error: string = "Invalid login or password";
+                return UserActions.getUserError({ error });
               }
             }),
-            catchError(() => observableOf(UserActions.getUserError())),
+            catchError(error => observableOf(UserActions.getUserError(error))),
           ),
         ),
       ),
@@ -88,7 +89,7 @@ export class UserEffects {
           this.router.navigate(["/login"]);
         }),
         // dispatch to clear all courses
-        mergeMap(() => [CoursesActions.getCoursesError(), UserActions.getUserError()]),
+        mergeMap(() => [CoursesActions.getCoursesError(), UserActions.getUserError(undefined)]),
       ),
     );
   }

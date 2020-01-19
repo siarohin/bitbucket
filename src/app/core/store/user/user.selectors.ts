@@ -11,3 +11,8 @@ export const selectUserState = createFeatureSelector<UserState>("user");
  * User' state data selector
  */
 export const selectUserData = createSelector(selectUserState, (state: UserState) => state.data);
+
+/**
+ * User' state error selector
+ */
+export const selectUserError = createSelector(selectUserState, (state: UserState) => state.error);

@@ -12,7 +12,10 @@ export const getUserSuccess = createAction(
   props<{ user: UserAuthModel }>(),
 );
 
-export const getUserError = createAction("[Dashboard (App) / Login Page] GET_USER_ERROR");
+export const getUserError = createAction(
+  "[Dashboard (App) / Login Page] GET_USER_ERROR",
+  props<{ error: string }>(),
+);
 
 export const authenticateUser = createAction(
   "[Login Page] AUTHENTICATE_USER",

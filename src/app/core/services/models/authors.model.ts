@@ -15,5 +15,5 @@ export interface AuthorsModel {
   /**
    * author's last name
    */
-  lastName: string;
+  lastName?: string;
 }

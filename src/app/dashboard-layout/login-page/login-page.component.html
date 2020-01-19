@@ -1,20 +1,23 @@
 <mat-card>
   <mat-card-title>Login</mat-card-title>
+  <mat-card-subtitle>{{ errorMsg$ | async }}</mat-card-subtitle>
   <mat-card-content>
-    <form (ngSubmit)="onSubmit(loginForm)" #loginForm="ngForm">
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <p>
         <mat-form-field>
-          <input type="text" matInput placeholder="Login" name="login" ngModel required />
+          <input type="text" matInput placeholder="Login" formControlName="login" />
+          <mat-error *ngIf="login.invalid && login.errors.required">field is required</mat-error>
         </mat-form-field>
       </p>
       <p>
         <mat-form-field>
-          <input type="password" matInput placeholder="Password" name="password" ngModel required />
+          <input type="password" matInput placeholder="Password" formControlName="password" />
+          <mat-error *ngIf="password.invalid && password.errors.required">field is required</mat-error>
         </mat-form-field>
       </p>
       <div class="button">
         <button color="primary" class="password-btn" mat-button>Forgot password?</button>
-        <button type="submit" mat-button>Login</button>
+        <button type="submit" mat-button [disabled]="loginForm.invalid">Login</button>
       </div>
     </form>
   </mat-card-content>

@@ -1,6 +1,6 @@
-<mat-form-field appearance="outline">
+<mat-form-field appearance="outline" [formGroup]="authorsCourseForm">
   <mat-label>Authors</mat-label>
-  <mat-chip-list #chipList aria-label="Author selection">
+  <mat-chip-list #chipList aria-label="Author selection" formControlName="authors">
     <mat-chip
       *ngFor="let author of authors"
       [selectable]="isSelectable"
@@ -12,12 +12,18 @@
     </mat-chip>
 
     <input
+      #chipInput
       matInput
-      required
+      formControlName="userInput"
       [matChipInputFor]="chipList"
-      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
       [matChipInputAddOnBlur]="isAddOnBlur"
-      (matChipInputTokenEnd)="add($event)"
+      [matAutocomplete]="auto"
     />
   </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="add($event)">
+    <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+      {{ option?.name }}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="chipList.errorState">at least one author should be set</mat-error>
 </mat-form-field>

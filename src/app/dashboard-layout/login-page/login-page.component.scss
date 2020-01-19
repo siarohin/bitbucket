@@ -13,6 +13,11 @@
   min-width: 30rem;
 }
 
+.mat-card-subtitle {
+  height: 1rem;
+  color: var(--red);
+}
+
 .mat-card-content {
   display: flex;
   justify-content: center;
