@@ -1,10 +1,10 @@
 import { Component } from "@angular/core";
 import { RouterOutlet } from "@angular/router";
 import { Title, Meta } from "@angular/platform-browser";
+import { DateAdapter } from "@angular/material";
 import { TranslateService } from "@ngx-translate/core";
 
 import { SpinnerService } from "./widgets/index";
-import { DateAdapter } from "@angular/material";
 
 @Component({
   selector: "app-root",
