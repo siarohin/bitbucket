@@ -1,6 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { Router } from "@angular/router";
 import { MatDialog } from "@angular/material/dialog";
+import { TranslateService } from "@ngx-translate/core";
 import { Observable } from "rxjs";
 import { publishReplay, refCount } from "rxjs/operators";
 import isNil from "lodash/isNil";
@@ -32,6 +33,7 @@ export class CoursesListComponent implements OnInit {
   private coursesFacade: CoursesFacade;
   private authorsFacade: AuthorsFacade;
   private router: Router;
+  private translate: TranslateService;
 
   /**
    * Searching value from form
@@ -58,11 +60,18 @@ export class CoursesListComponent implements OnInit {
    */
   public faPlus: IconDefinition = faPlus;
 
-  constructor(dialog: MatDialog, router: Router, coursesFacade: CoursesFacade, authorsFacade: AuthorsFacade) {
+  constructor(
+    dialog: MatDialog,
+    router: Router,
+    coursesFacade: CoursesFacade,
+    authorsFacade: AuthorsFacade,
+    translate: TranslateService,
+  ) {
     this.dialog = dialog;
     this.router = router;
     this.coursesFacade = coursesFacade;
     this.authorsFacade = authorsFacade;
+    this.translate = translate;
   }
 
   /**
@@ -94,7 +103,7 @@ export class CoursesListComponent implements OnInit {
    * On remove button click
    */
   public onRemoveCourse(courseId: number): void {
-    const name = "Do you really want to delete this course?";
+    const name = this.translate.instant("courses.add-course.text.remove");
     const data: CourseItemModel = { id: courseId, name };
     const params: DialogParamsModel = { action: DialogAction.Remove, data };
     this.openDialog(params);
@@ -104,7 +113,7 @@ export class CoursesListComponent implements OnInit {
    * On add course button click
    */
   public onAddCourse(): void {
-    const name = "New course";
+    const name = this.translate.instant("courses.add-course.text.new");
     const data: CourseItemModel = { name };
     const params: DialogParamsModel = { action: DialogAction.Create, data };
     this.openDialog(params);

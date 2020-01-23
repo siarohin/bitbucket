@@ -1,5 +1,5 @@
 <mat-form-field appearance="outline" [formGroup]="authorsCourseForm">
-  <mat-label>Authors</mat-label>
+  <mat-label>{{ "courses.add-course.authors" | translate }}</mat-label>
   <mat-chip-list #chipList aria-label="Author selection" formControlName="authors">
     <mat-chip
       *ngFor="let author of authors"
@@ -25,5 +25,5 @@
       {{ option?.name }}
     </mat-option>
   </mat-autocomplete>
-  <mat-error *ngIf="chipList.errorState">at least one author should be set</mat-error>
+  <mat-error *ngIf="chipList.errorState">{{ "courses.validator.not-authors" | translate }}</mat-error>
 </mat-form-field>

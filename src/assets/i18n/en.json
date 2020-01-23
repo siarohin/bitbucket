@@ -1,0 +1,70 @@
+{
+  "dashboard": {
+    "courses": "Courses"
+  },
+  "login": {
+    "title": "Login",
+    "required": "Field is required",
+    "login": "Login",
+    "password": "Password",
+    "button": {
+      "login": "Login",
+      "forgot": "Forgot password?"
+    }
+  },
+  "user": {
+    "logout": "Log off"
+  },
+  "footer": {
+    "context": "Copyright © Videocourses. All rights reserved"
+  },
+  "courses": {
+    "button": {
+      "add": "Add course",
+      "load": "Load more",
+      "submit": "Yes",
+      "reject": "No",
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "warning": {
+      "no-more": "All courses were loaded",
+      "no-data": "No data, feel free to add new course"
+    },
+    "loading": {
+      "text": "Please, wait"
+    },
+    "add-course": {
+      "name": "Name",
+      "duration": "Duration",
+      "date": "Date",
+      "authors": "Authors",
+      "text": {
+        "new": "New course",
+        "remove": "Do you really want to delete this course?"
+      }
+    },
+    "validator": {
+      "max-length": "Max length",
+      "min-length": "Min length",
+      "required": "Field is required",
+      "not-number": "Value should be a number",
+      "not-format": "Format should be dd/mm/yyyy",
+      "not-authors": "At least one author should be set"
+    }
+  },
+  "search": {
+    "placeholder": "Text to search"
+  },
+  "404": {
+    "text": "Page was not found"
+  },
+  "libs": {
+    "date": {
+      "h": "h",
+      "min": "min"
+    }
+  }
+}

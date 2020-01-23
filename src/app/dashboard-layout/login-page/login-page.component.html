@@ -1,23 +1,32 @@
 <mat-card>
-  <mat-card-title>Login</mat-card-title>
+  <mat-card-title translate>login.title</mat-card-title>
   <mat-card-subtitle>{{ errorMsg$ | async }}</mat-card-subtitle>
   <mat-card-content>
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <p>
         <mat-form-field>
-          <input type="text" matInput placeholder="Login" formControlName="login" />
-          <mat-error *ngIf="login.invalid && login.errors.required">field is required</mat-error>
+          <input matInput type="text" [placeholder]="'login.login' | translate" formControlName="login" />
+          <mat-error *ngIf="login.invalid && login.errors.required" translate>login.required</mat-error>
         </mat-form-field>
       </p>
       <p>
         <mat-form-field>
-          <input type="password" matInput placeholder="Password" formControlName="password" />
-          <mat-error *ngIf="password.invalid && password.errors.required">field is required</mat-error>
+          <input
+            matInput
+            type="password"
+            [placeholder]="'login.password' | translate"
+            formControlName="password"
+          />
+          <mat-error *ngIf="password.invalid && password.errors.required" translate>login.required</mat-error>
         </mat-form-field>
       </p>
       <div class="button">
-        <button color="primary" class="password-btn" mat-button>Forgot password?</button>
-        <button type="submit" mat-button [disabled]="loginForm.invalid">Login</button>
+        <button color="primary" class="password-btn" mat-button>
+          {{ "login.button.forgot" | translate }}
+        </button>
+        <button type="submit" mat-button [disabled]="loginForm.invalid">
+          {{ "login.button.login" | translate }}
+        </button>
       </div>
     </form>
   </mat-card-content>

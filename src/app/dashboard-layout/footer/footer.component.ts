@@ -1,5 +1,5 @@
 // tslint:disable:no-conflicting-lifecycle
-import { Component, ChangeDetectionStrategy } from "@angular/core";
+import { Component, ChangeDetectionStrategy, Output, EventEmitter } from "@angular/core";
 
 /**
  * Simple component that represents footer
@@ -10,4 +10,29 @@ import { Component, ChangeDetectionStrategy } from "@angular/core";
   styleUrls: ["./footer.component.scss"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FooterComponent {}
+export class FooterComponent {
+  private language: string;
+
+  /**
+   * available languages
+   */
+  public languageMap: Array<string> = ["en", "ru"];
+
+  /**
+   * on language change
+   */
+  @Output()
+  public languageChange: EventEmitter<string> = new EventEmitter();
+
+  /**
+   * emit next language
+   */
+  public onLanguageChange(language: string): void {
+    if (this.language === language) {
+      return;
+    }
+
+    this.language = language;
+    this.languageChange.emit(language);
+  }
+}

@@ -7,7 +7,8 @@
         </h1>
         <span class="add-title">
           <fa-icon [icon]="faClock"></fa-icon> {{ course?.length | convertTime }}
-          <fa-icon [icon]="faCalendarAlt"></fa-icon> {{ course?.date | date: "d MMM, y" }}
+          <fa-icon [icon]="faCalendarAlt"></fa-icon>
+          {{ course?.date | date }}
         </span>
       </mat-card-title>
       <mat-card-content>{{ course?.description }}</mat-card-content>

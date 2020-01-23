@@ -1,3 +1,14 @@
 <div class="content">
-  <p>Copyright © Videocourses. All rights reserved</p>
+  <mat-button-toggle-group
+    class="lang"
+    value="en"
+    (change)="onLanguageChange(group.value)"
+    #group="matButtonToggleGroup"
+  >
+    <mat-button-toggle *ngFor="let language of languageMap" [value]="language">
+      {{ language }}
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+
+  <p class="copyright" translate>footer.context</p>
 </div>
